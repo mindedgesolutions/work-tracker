@@ -3,32 +3,23 @@ import { Modal } from "react-bootstrap";
 import SubmitBtn from "../SubmitBtn";
 import { useDispatch, useSelector } from "react-redux";
 import { unsetAddModal } from "../../features/masters/projectSlice";
-import { IoAddOutline } from "react-icons/io5";
-import { AiOutlineMinus } from "react-icons/ai";
 import ProjectContact from "./ProjectContact";
-import { nanoid } from "nanoid";
 
 const AddEditProject = () => {
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
   const [contact, setContact] = useState(1);
-  const { addModal, projectId } = useSelector((store) => store.projects);
-
-  const incContact = () => {
-    const increased = contact + 1;
-    setContact(increased);
-  };
-
-  const decContact = () => {
-    let decreased = contact >= 2 ? contact - 1 : 1;
-    setContact(decreased);
-  };
+  const { addModal, projectId, contactCount } = useSelector(
+    (store) => store.projects
+  );
 
   const handleClose = () => {
     dispatch(unsetAddModal());
   };
 
-  const handleSubmit = async (e) => {};
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+  };
 
   return (
     <Modal show={addModal} size="lg" onHide={handleClose}>
@@ -98,28 +89,7 @@ const AddEditProject = () => {
             </div>
           </div>
           <hr />
-          <div className="row">
-            <div className="col-md-6">&nbsp;</div>
-            <div className="col-auto ms-auto">
-              <button
-                type="button"
-                className="btn btn-sm btn-warning me-2"
-                onClick={incContact}
-              >
-                <IoAddOutline size={16} />
-              </button>
-              <button
-                type="button"
-                className="btn btn-sm btn-default"
-                onClick={decContact}
-              >
-                <AiOutlineMinus size={16} />
-              </button>
-            </div>
-          </div>
-          {Array.from({ length: contact }, (_, index) => (
-            <ProjectContact key={nanoid()} index={index + 1} />
-          ))}
+          <ProjectContact />
         </Modal.Body>
         <Modal.Footer>
           <SubmitBtn

@@ -5,6 +5,10 @@ const initialState = {
   listProject: [],
   addModal: false,
   projectId: null,
+  contacts: [],
+  contactCount: 1,
+  disabled: true,
+  editIndex: "",
 };
 
 const projectSlice = createSlice({
@@ -29,6 +33,26 @@ const projectSlice = createSlice({
     unsetAddModal: (state) => {
       state.addModal = false;
     },
+    setContacts: (state, action) => {
+      const { name, email, mobile } = action.payload;
+      state.contacts = [...state.contacts, action.payload];
+      state.contactCount = state.contactCount + 1;
+      console.log(state.contacts);
+    },
+    removeContact: (state, action) => {
+      state.contacts = state.contacts.filter(
+        (i, index) => index !== action.payload
+      );
+    },
+    enableEdit: (state, action) => {
+      state.editIndex = action.payload;
+      state.disabled = false;
+    },
+    editContact: (state, action) => {
+      // const edit = state.contacts.find()
+      state.editIndex = "";
+      state.disabled = true;
+    },
   },
 });
 
@@ -39,5 +63,9 @@ export const {
   unsetProjectId,
   setAddModal,
   unsetAddModal,
+  setContacts,
+  removeContact,
+  enableEdit,
+  editContact,
 } = projectSlice.actions;
 export default projectSlice.reducer;
