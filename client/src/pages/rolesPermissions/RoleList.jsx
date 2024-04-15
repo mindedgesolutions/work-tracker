@@ -26,6 +26,7 @@ import { updateChangeCount } from "../../features/common/commonSlice";
 
 const RoleList = () => {
   document.title = `List of Roles | ${import.meta.env.VITE_APP_TITLE}`;
+  const returnUrl = `/admin/roles`;
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -41,7 +42,12 @@ const RoleList = () => {
   const fetchData = async () => {
     setIsLoading(true);
     try {
-      const response = await customFetch.get(`/masters/roles`);
+      const response = await customFetch.get(`/masters/roles`, {
+        params: {
+          name: queryParams.get("s") || "",
+          page: queryParams.get("page") || "",
+        },
+      });
 
       setMetaData(response.data.meta);
       dispatch(setListRole(response.data.data.rows));
@@ -59,7 +65,10 @@ const RoleList = () => {
   const currentPage = metaData?.currentPage;
   const totalRecords = metaData?.totalRecords;
 
-  const resetSearch = () => {};
+  const resetSearch = () => {
+    setSearchInput("");
+    navigate(returnUrl);
+  };
 
   useEffect(() => {
     fetchData();
