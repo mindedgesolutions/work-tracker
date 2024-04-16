@@ -4,11 +4,15 @@ import SubmitBtn from "../SubmitBtn";
 import { useDispatch, useSelector } from "react-redux";
 import { unsetAddModal } from "../../features/masters/projectSlice";
 import ProjectContact from "./ProjectContact";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 const AddEditProject = () => {
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
-  const [contact, setContact] = useState(1);
+  const [startDate, setStartDate] = useState(new Date());
+  const [endDate, setEndDate] = useState();
+
   const { addModal, projectId, contactCount } = useSelector(
     (store) => store.projects
   );
@@ -74,18 +78,29 @@ const AddEditProject = () => {
               <label htmlFor="start" className="form-label required">
                 Start date :{" "}
               </label>
-              <input
-                type="text"
+              <DatePicker
                 className="form-control"
                 name="start"
-                id="start"
+                dateFormat={import.meta.env.VITE_DATE_FORMAT}
+                selected={startDate}
+                minDate={new Date()}
+                maxDate={endDate}
+                onChange={(date) => setStartDate(date)}
               />
             </div>
             <div className="col-md-6 col-sm-12">
               <label htmlFor="end" className="form-label">
                 End date :{" "}
               </label>
-              <input type="text" className="form-control" name="end" id="end" />
+              <DatePicker
+                className="form-control"
+                name="end"
+                dateFormat={import.meta.env.VITE_DATE_FORMAT}
+                selected={endDate}
+                minDate={startDate}
+                maxDate={new Date()}
+                onChange={(date) => setEndDate(date)}
+              />
             </div>
           </div>
           <hr />

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   editContact,
@@ -14,9 +14,7 @@ import { LuTrash2 } from "react-icons/lu";
 
 const ProjectContact = () => {
   const dispatch = useDispatch();
-  const { contacts, disabled, editIndex } = useSelector(
-    (store) => store.projects
-  );
+  const { contacts, editIndex } = useSelector((store) => store.projects);
   const [form, setForm] = useState({ name: "", email: "", mobile: "" });
 
   const handleChange = (e) => {
@@ -34,6 +32,39 @@ const ProjectContact = () => {
     setForm({ ...form, name: "", email: "", mobile: "" });
   };
 
+  // Edit starts ------
+  const contact = contacts?.find((i, index) => index === editIndex);
+
+  const [edit, setEdit] = useState({
+    editName: "",
+    editEmail: "",
+    editMobile: "",
+  });
+
+  const handleEdit = (e) => {
+    setEdit({ ...edit, [e.target.name]: e.target.value });
+  };
+
+  const handleEditSubmit = () => {
+    const data = {
+      id: editIndex,
+      name: edit.editName,
+      email: edit.editEmail,
+      mobile: edit.editMobile,
+    };
+    dispatch(editContact(data));
+  };
+  // Edit ends ------
+
+  useEffect(() => {
+    setEdit({
+      ...edit,
+      editName: contact?.name || "",
+      editEmail: contact?.email || "",
+      editMobile: contact?.mobile || "",
+    });
+  }, [contact]);
+
   return (
     <>
       <div className="row mt-2">
@@ -49,7 +80,49 @@ const ProjectContact = () => {
             </thead>
             <tbody>
               {contacts?.map((i, index) => {
-                return (
+                return index === editIndex ? (
+                  <tr key={nanoid()}>
+                    <td>
+                      <input
+                        type="text"
+                        className="form-control"
+                        name="editName"
+                        id="editName"
+                        value={edit?.editName}
+                        onChange={handleEdit}
+                      />
+                    </td>
+                    <td>
+                      <input
+                        type="text"
+                        className="form-control"
+                        name="editEmail"
+                        id="editEmail"
+                        value={edit?.editEmail}
+                        onChange={handleEdit}
+                      />
+                    </td>
+                    <td>
+                      <input
+                        type="text"
+                        className="form-control"
+                        name="editMobile"
+                        id="editMobile"
+                        value={edit?.editMobile}
+                        onChange={handleEdit}
+                      />
+                    </td>
+                    <td className="text-nowrap">
+                      <button
+                        type="button"
+                        className="btn btn-sm btn-success me-2"
+                        onClick={handleEditSubmit}
+                      >
+                        <IoMdCheckmark size={16} />
+                      </button>
+                    </td>
+                  </tr>
+                ) : (
                   <tr key={nanoid()}>
                     <td>
                       <input
@@ -57,19 +130,7 @@ const ProjectContact = () => {
                         className="form-control"
                         name="name"
                         id="name"
-                        value={i?.name}
-                        onChange={() => {}}
-                        disabled={index === editIndex ? false : true}
-                      />
-                    </td>
-                    <td>
-                      <input
-                        type="text"
-                        className="form-control"
-                        name="mobile"
-                        id="mobile"
-                        value={i?.mobile}
-                        onChange={() => {}}
+                        defaultValue={i?.name}
                         disabled={index === editIndex ? false : true}
                       />
                     </td>
@@ -79,29 +140,28 @@ const ProjectContact = () => {
                         className="form-control"
                         name="email"
                         id="email"
-                        value={i?.email}
-                        onChange={() => {}}
+                        defaultValue={i?.email}
+                        disabled={index === editIndex ? false : true}
+                      />
+                    </td>
+                    <td>
+                      <input
+                        type="text"
+                        className="form-control"
+                        name="mobile"
+                        id="mobile"
+                        defaultValue={i?.mobile}
                         disabled={index === editIndex ? false : true}
                       />
                     </td>
                     <td className="text-nowrap">
-                      {index === editIndex ? (
-                        <button
-                          type="button"
-                          className="btn btn-sm btn-success me-2"
-                          onClick={() => dispatch(editContact(index))}
-                        >
-                          <IoMdCheckmark size={16} />
-                        </button>
-                      ) : (
-                        <button
-                          type="button"
-                          className="btn btn-sm btn-info me-2"
-                          onClick={() => dispatch(enableEdit(index))}
-                        >
-                          <MdModeEdit size={16} />
-                        </button>
-                      )}
+                      <button
+                        type="button"
+                        className="btn btn-sm btn-info me-2"
+                        onClick={() => dispatch(enableEdit(index))}
+                      >
+                        <MdModeEdit size={16} />
+                      </button>
                       <button
                         type="button"
                         className="btn btn-sm btn-danger"
@@ -128,9 +188,9 @@ const ProjectContact = () => {
                   <input
                     type="text"
                     className="form-control"
-                    name="mobile"
-                    id="mobile"
-                    value={form.mobile}
+                    name="email"
+                    id="email"
+                    value={form.email}
                     onChange={handleChange}
                   />
                 </td>
@@ -138,9 +198,9 @@ const ProjectContact = () => {
                   <input
                     type="text"
                     className="form-control"
-                    name="email"
-                    id="email"
-                    value={form.email}
+                    name="mobile"
+                    id="mobile"
+                    value={form.mobile}
                     onChange={handleChange}
                   />
                 </td>

@@ -49,7 +49,19 @@ const projectSlice = createSlice({
       state.disabled = false;
     },
     editContact: (state, action) => {
-      // const edit = state.contacts.find()
+      let details = state.contacts.find(
+        (i, index) => index === action.payload.id
+      );
+      details = {
+        ...details,
+        name: action.payload.name,
+        email: action.payload.email,
+        mobile: action.payload.mobile,
+      };
+      state.contacts = state.contacts.filter(
+        (i, index) => index !== action.payload.id
+      );
+      state.contacts.push(details);
       state.editIndex = "";
       state.disabled = true;
     },

@@ -3,6 +3,7 @@ import { withValidationErrors } from "./withErrorMiddleware.js";
 import slug from "slug";
 import pool from "../db.js";
 import { BadRequestError } from "../errors/customErrors.js";
+import dayjs from "dayjs";
 
 export const validateRole = withValidationErrors([
   body("name")
@@ -21,5 +22,19 @@ export const validateRole = withValidationErrors([
         throw new BadRequestError(`Role exists`);
       }
       return true;
+    }),
+]);
+
+export const validateProject = withValidationErrors([
+  body("name").notEmpty().withMessage(`Project name is required`),
+  body("mode").notEmpty().withMessage(`Select project mode`),
+  body("start").notEmpty().withMessage(`Start date is required`),
+  body("end")
+    .optional({ checkFalsy: true })
+    .custom((value, { req }) => {
+      const { start } = req.body;
+      const startDate = dayjs(start).format(`YYYY-MM-DD`);
+      console.log(startDate);
+      return;
     }),
 ]);
