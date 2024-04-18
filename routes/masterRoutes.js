@@ -7,7 +7,10 @@ import {
   getRoleWithPagination,
   updateRole,
 } from "../controller/masters/roleController.js";
-import { validateRole } from "../middleware/masterMiddleware.js";
+import {
+  validateProject,
+  validateRole,
+} from "../middleware/masterMiddleware.js";
 import {
   addNewProject,
   deleteProject,
@@ -24,7 +27,11 @@ router
 router.route(`/roles/:id`).patch(validateRole, updateRole).delete(deleteRole);
 
 router.get(`/all-projects`, getAllProjects);
-router.route(`/projects`).get(getProjectWithPagination).post(addNewProject);
+router
+  .route(`/projects`)
+  .get(getProjectWithPagination)
+  .post(validateProject, addNewProject);
+// .post(addNewProject);
 router.route(`/projects/:id`).patch(updateProject).delete(deleteProject);
 
 export default router;

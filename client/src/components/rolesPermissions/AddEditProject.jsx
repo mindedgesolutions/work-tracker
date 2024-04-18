@@ -40,19 +40,20 @@ const AddEditProject = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsLoading(true);
+    // setIsLoading(true);
     const formData = new FormData(e.currentTarget);
     let data = Object.fromEntries(formData);
     data = { ...data, contacts };
     try {
-      await customFetch.post(`/masters/projects`, data);
+      const response = await customFetch.post(`/masters/projects`, data);
 
       dispatch(updateChangeCount());
       dispatch(unsetAddModal());
       toast.success(`Added successfully`);
-      setIsLoading(false);
+      // setIsLoading(false);
     } catch (error) {
-      setIsLoading(false);
+      console.log(error);
+      // setIsLoading(false);
       splitErrors(error?.response?.data?.msg);
       return error;
     }
@@ -145,7 +146,7 @@ const AddEditProject = () => {
             </div>
           </div>
           <div className="row mt-2 px-2">
-            <div className="row col-md-6 col-sm-12 me-2">
+            <div className="row col-md-6 col-sm-12 me-3">
               <label htmlFor="startDate" className="form-label required">
                 Start date :{" "}
               </label>

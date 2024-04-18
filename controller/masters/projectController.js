@@ -2,6 +2,7 @@ import { StatusCodes } from "http-status-codes";
 import pool from "../../db.js";
 import { paginationLogic } from "../../utils/pagination.js";
 import { currentDate, formatDate } from "../../utils/functions.js";
+import { BadRequestError } from "../../errors/customErrors.js";
 
 export const addNewProject = async (req, res) => {
   const { pname, desc, pdept, pmode, startDate, endDate, contacts } = req.body;
@@ -9,6 +10,12 @@ export const addNewProject = async (req, res) => {
   const end = endDate ? formatDate(endDate) : null;
   const createdAt = currentDate();
   const updatedAt = currentDate();
+
+  if (contacts.length === 0) {
+    throw new BadRequestError(
+      `At least one contact is required for the project`
+    );
+  }
 
   try {
     await pool.query(`BEGIN`);

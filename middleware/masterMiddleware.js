@@ -4,6 +4,7 @@ import slug from "slug";
 import pool from "../db.js";
 import { BadRequestError } from "../errors/customErrors.js";
 import dayjs from "dayjs";
+import { formatDate } from "../utils/functions.js";
 
 export const validateRole = withValidationErrors([
   body("name")
@@ -26,15 +27,19 @@ export const validateRole = withValidationErrors([
 ]);
 
 export const validateProject = withValidationErrors([
-  body("name").notEmpty().withMessage(`Project name is required`),
-  body("mode").notEmpty().withMessage(`Select project mode`),
-  body("start").notEmpty().withMessage(`Start date is required`),
-  body("end")
+  body("pname").notEmpty().withMessage(`Project name is required`),
+  body("pdept").notEmpty().withMessage(`Select department`),
+  body("pmode").notEmpty().withMessage(`Select project mode`),
+  body("startDate").notEmpty().withMessage(`Start date is required`),
+  body("endDate")
     .optional({ checkFalsy: true })
-    .custom((value, { req }) => {
-      const { start } = req.body;
-      const startDate = dayjs(start).format(`YYYY-MM-DD`);
-      console.log(startDate);
-      return;
+    .custom(async (value, { req }) => {
+      const { startDate } = req.body;
+      const start = dayjs(formatDate(startDate));
+      const end = dayjs(formatDate(value));
+      if (end.diff(start) < 0) {
+        throw new BadRequestError(`Start date cannot be greater than end date`);
+      }
+      return true;
     }),
 ]);
