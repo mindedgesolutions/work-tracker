@@ -1,5 +1,5 @@
 import React from "react";
-import Logo from "../assets/dist/images/logo.png";
+import Logo from "../assets/images/ssy_nic_logo.png";
 import Avatar from "../assets/dist/images/000m.jpg";
 import { Link } from "react-router-dom";
 import { AiOutlineHome, AiOutlineFile } from "react-icons/ai";

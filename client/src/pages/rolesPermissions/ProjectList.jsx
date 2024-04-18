@@ -20,6 +20,7 @@ import { IoFolderOpen, IoReloadSharp } from "react-icons/io5";
 import { serialNo } from "../../../utils/functions";
 import { MdOutlineModeEdit } from "react-icons/md";
 import { FaRegTrashCan } from "react-icons/fa6";
+import { nanoid } from "nanoid";
 
 const ProjectList = () => {
   document.title = `List of Projects | ${import.meta.env.VITE_ADMIN_TITLE}`;

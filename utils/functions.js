@@ -2,6 +2,7 @@ import dayjs from "dayjs";
 import pool from "../db.js";
 import slug from "slug";
 import jwt from "jsonwebtoken";
+import date from "date-and-time";
 
 export const createUsername = async (name) => {
   let username = slug(name);
@@ -20,6 +21,16 @@ export const createUsername = async (name) => {
 
 export const currentDate = () => {
   return dayjs().format("YYYY-MM-DD HH:mm:ss");
+};
+
+export const formatDate = (value) => {
+  const startArray = value.split("-");
+  const filterStart = dayjs(
+    `${startArray[2]}-${startArray[1]}-${startArray[0]}`,
+    "Asia/Kolkata"
+  ).format(`YYYY-MM-DD`);
+
+  return filterStart;
 };
 
 export const formatStartDate = (date) => {
