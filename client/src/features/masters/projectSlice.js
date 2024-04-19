@@ -6,7 +6,6 @@ const initialState = {
   addModal: false,
   projectId: null,
   contacts: [],
-  contactCount: 1,
   disabled: true,
   editIndex: "",
 };
@@ -34,36 +33,40 @@ const projectSlice = createSlice({
       state.addModal = false;
     },
     setContacts: (state, action) => {
-      const { name, email, mobile } = action.payload;
-      state.contacts = [...state.contacts, action.payload];
-      state.contactCount = state.contactCount + 1;
-      console.log(state.contacts);
+      const { id, name, email, mobile } = action.payload;
+      state.contacts = !state.contacts
+        ? [action.payload]
+        : [...state.contacts, action.payload];
     },
     removeContact: (state, action) => {
-      state.contacts = state.contacts.filter(
-        (i, index) => index !== action.payload
-      );
+      state.contacts = state.contacts.filter((i) => i.id !== action.payload);
     },
     enableEdit: (state, action) => {
       state.editIndex = action.payload;
       state.disabled = false;
     },
     editContact: (state, action) => {
-      let details = state.contacts.find(
-        (i, index) => index === action.payload.id
-      );
+      let details = state.contacts.find((i) => i.id === action.payload.id);
       details = {
         ...details,
+        id: action.payload.id,
         name: action.payload.name,
         email: action.payload.email,
         mobile: action.payload.mobile,
       };
-      state.contacts = state.contacts.filter(
-        (i, index) => index !== action.payload.id
-      );
+      state.contacts = state.contacts.filter((i) => i.id !== action.payload.id);
       state.contacts.push(details);
       state.editIndex = "";
       state.disabled = true;
+    },
+    unsetContacts: (state) => {
+      state.contacts = [];
+    },
+    unsetEditId: (state) => {
+      state.editIndex = "";
+    },
+    setDbContacts: (state, action) => {
+      state.contacts = action.payload;
     },
   },
 });
@@ -79,5 +82,8 @@ export const {
   removeContact,
   enableEdit,
   editContact,
+  unsetContacts,
+  unsetEditId,
+  setDbContacts,
 } = projectSlice.actions;
 export default projectSlice.reducer;

@@ -5,6 +5,7 @@ import pool from "../db.js";
 import { BadRequestError } from "../errors/customErrors.js";
 import dayjs from "dayjs";
 import { formatDate } from "../utils/functions.js";
+import { isMobileNumber } from "../utils/formatValidation.js";
 
 export const validateRole = withValidationErrors([
   body("name")
@@ -42,4 +43,18 @@ export const validateProject = withValidationErrors([
       }
       return true;
     }),
+]);
+
+export const validateProjectContact = withValidationErrors([
+  body("name").notEmpty().withMessage(`Name of the contact is required`),
+  body("email")
+    .notEmpty()
+    .withMessage(`Email is required`)
+    .isEmail()
+    .withMessage(`Invalid email`),
+  body("mobile")
+    .notEmpty()
+    .withMessage(`Mobile no. is required`)
+    .custom(isMobileNumber)
+    .withMessage(`Invalid mobile no.`),
 ]);

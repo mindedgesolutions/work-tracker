@@ -1,8 +1,14 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Modal } from "react-bootstrap";
 import SubmitBtn from "../SubmitBtn";
 import { useDispatch, useSelector } from "react-redux";
-import { unsetAddModal } from "../../features/masters/projectSlice";
+import {
+  setDbContacts,
+  unsetAddModal,
+  unsetContacts,
+  unsetEditId,
+  unsetProjectId,
+} from "../../features/masters/projectSlice";
 import ProjectContact from "./ProjectContact";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -20,9 +26,11 @@ const AddEditProject = () => {
   const [startDate, setStartDate] = useState(new Date());
   const maxEndDate = dayjs(startDate).add(5, "years").format(`YYYY-MM-DD`);
   const [endDate, setEndDate] = useState("");
-  const { addModal, projectId, contactCount, contacts } = useSelector(
+  const { addModal, projectId, contacts, listProject } = useSelector(
     (store) => store.projects
   );
+  const project = listProject.find((i) => i.id === projectId);
+
   const [form, setForm] = useState({
     pname: "",
     desc: "",
@@ -36,35 +44,62 @@ const AddEditProject = () => {
 
   const handleClose = () => {
     dispatch(unsetAddModal());
+    dispatch(unsetProjectId());
+    dispatch(unsetEditId());
+    dispatch(unsetContacts());
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // setIsLoading(true);
+    setIsLoading(true);
     const formData = new FormData(e.currentTarget);
     let data = Object.fromEntries(formData);
     data = { ...data, contacts };
+    const process = projectId ? customFetch.patch : customFetch.post;
+    const apiUrl = projectId
+      ? `/masters/projects/${projectId}`
+      : `/masters/projects`;
+    const msg = projectId ? `Data updated` : `Added successfully`;
     try {
-      const response = await customFetch.post(`/masters/projects`, data);
+      const response = await process(apiUrl, data);
 
       dispatch(updateChangeCount());
       dispatch(unsetAddModal());
-      toast.success(`Added successfully`);
-      // setIsLoading(false);
+      dispatch(unsetContacts());
+
+      setForm({ ...form, pname: "", desc: "", pmode: "", pdept: "" });
+      setStartDate(new Date());
+      setEndDate("");
+
+      toast.success(msg);
+      setIsLoading(false);
     } catch (error) {
       console.log(error);
-      // setIsLoading(false);
+      setIsLoading(false);
       splitErrors(error?.response?.data?.msg);
       return error;
     }
   };
+
+  useEffect(() => {
+    setForm({
+      ...form,
+      pname: project?.name || "",
+      desc: project?.description || "",
+      pmode: project?.mode || "",
+      pdept: project?.department || "",
+    });
+    setStartDate(project?.start_date || new Date());
+    setEndDate(project?.end_date);
+    dispatch(setDbContacts(project?.contacts));
+  }, [projectId]);
 
   return (
     <Modal show={addModal} size="lg" onHide={handleClose}>
       <Modal.Header closeButton>
         <Modal.Title>
           {projectId
-            ? `Update details of ${form.name.toUpperCase()}`
+            ? `Update details of ${form.pname.toUpperCase()}`
             : `Add project`}
         </Modal.Title>
       </Modal.Header>

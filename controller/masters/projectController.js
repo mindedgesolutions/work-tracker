@@ -4,6 +4,20 @@ import { paginationLogic } from "../../utils/pagination.js";
 import { currentDate, formatDate } from "../../utils/functions.js";
 import { BadRequestError } from "../../errors/customErrors.js";
 
+// ------
+
+export const projectContact = async (req, res) => {
+  const { name, email, mobile } = req.body;
+  const data = {
+    name: name,
+    email: email,
+    mobile: mobile,
+  };
+  res.status(StatusCodes.OK).json({ data });
+};
+
+// ------
+
 export const addNewProject = async (req, res) => {
   const { pname, desc, pdept, pmode, startDate, endDate, contacts } = req.body;
   const start = formatDate(startDate);
@@ -49,9 +63,21 @@ export const addNewProject = async (req, res) => {
   }
 };
 
-export const updateProject = async (req, res) => {};
+// ------
+
+export const updateProject = async (req, res) => {
+  const { pname, desc, pdept, pmode, startDate, endDate, contacts } = req.body;
+  const start = formatDate(startDate);
+  const end = endDate ? formatDate(endDate) : null;
+  const updatedAt = currentDate();
+  console.log(contacts);
+};
+
+// ------
 
 export const deleteProject = async (req, res) => {};
+
+// ------
 
 export const getAllProjects = async (req, res) => {
   const data = await pool.query(`select * from projects`, []);
@@ -59,17 +85,33 @@ export const getAllProjects = async (req, res) => {
   res.status(StatusCodes.OK).json({ data });
 };
 
+// ------
+
 export const getProjectWithPagination = async (req, res) => {
   const { name, page } = req.query;
   const pagination = paginationLogic(page, null);
-  let search = name ? `where name ilike '%${name}%'` : ``;
+  let search = name ? `where pr.name ilike '%${name}%'` : ``;
 
   const data = await pool.query(
-    `select * from projects ${search} group by id order by name offset $1 limit $2`,
+    `select pr.*,
+    json_agg(
+      json_build_object(
+        'id', pc.id,
+        'name', pc.name,
+        'email', pc.email,
+        'mobile', pc.mobile
+      )
+    ) as contacts
+    from projects pr
+    left join project_contacts pc on pr.id = pc.project_id
+    ${search} group by pr.id order by pr.name offset $1 limit $2`,
     [pagination.offset, pagination.pageLimit]
   );
 
-  const records = await pool.query(`select * from projects ${search}`, []);
+  const records = await pool.query(
+    `select pr.* from projects pr ${search}`,
+    []
+  );
   const totalPages = Math.ceil(records.rowCount / pagination.pageLimit);
   const meta = {
     totalPages: totalPages,

@@ -6,6 +6,8 @@ import {
   setListProject,
   setProjects,
   setAddModal,
+  setProjectId,
+  setContacts,
 } from "../../features/masters/projectSlice";
 import { splitErrors } from "../../../utils/showErrors";
 import {
@@ -71,6 +73,11 @@ const ProjectList = () => {
   useEffect(() => {
     fetchData();
   }, [queryParams.get("s"), queryParams.get("page"), changeCount]);
+
+  const handleEdit = (id) => {
+    dispatch(setAddModal());
+    dispatch(setProjectId(id));
+  };
 
   return (
     <>
@@ -178,7 +185,7 @@ const ProjectList = () => {
                               <button
                                 type="button"
                                 className="btn btn-success btn-sm me-2"
-                                onClick={() => dispatch(setRoleId(r.id))}
+                                onClick={() => handleEdit(r.id)}
                               >
                                 <MdOutlineModeEdit />
                               </button>

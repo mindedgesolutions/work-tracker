@@ -9,6 +9,7 @@ import {
 } from "../controller/masters/roleController.js";
 import {
   validateProject,
+  validateProjectContact,
   validateRole,
 } from "../middleware/masterMiddleware.js";
 import {
@@ -16,6 +17,7 @@ import {
   deleteProject,
   getAllProjects,
   getProjectWithPagination,
+  projectContact,
   updateProject,
 } from "../controller/masters/projectController.js";
 
@@ -27,11 +29,14 @@ router
 router.route(`/roles/:id`).patch(validateRole, updateRole).delete(deleteRole);
 
 router.get(`/all-projects`, getAllProjects);
+router.post(`/validate-contact`, validateProjectContact, projectContact);
 router
   .route(`/projects`)
   .get(getProjectWithPagination)
   .post(validateProject, addNewProject);
-// .post(addNewProject);
-router.route(`/projects/:id`).patch(updateProject).delete(deleteProject);
+router
+  .route(`/projects/:id`)
+  .patch(validateProject, updateProject)
+  .delete(deleteProject);
 
 export default router;
