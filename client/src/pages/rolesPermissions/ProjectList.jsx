@@ -8,6 +8,7 @@ import {
   setAddModal,
   setProjectId,
   setContacts,
+  setViewModal,
 } from "../../features/masters/projectSlice";
 import { splitErrors } from "../../../utils/showErrors";
 import {
@@ -16,10 +17,11 @@ import {
   PageWrapper,
   PaginationContainer,
   TableLoader,
+  ViewProject,
 } from "../../components";
 import { IoIosSearch } from "react-icons/io";
 import { IoFolderOpen, IoReloadSharp } from "react-icons/io5";
-import { serialNo } from "../../../utils/functions";
+import { dateFormat, serialNo } from "../../../utils/functions";
 import { MdOutlineModeEdit } from "react-icons/md";
 import { FaRegTrashCan } from "react-icons/fa6";
 import { nanoid } from "nanoid";
@@ -150,6 +152,9 @@ const ProjectList = () => {
                     <tr>
                       <th className="bg-dark text-white">Sl. No.</th>
                       <th className="bg-dark text-white">Name</th>
+                      <th className="bg-dark text-white">Dept.</th>
+                      <th className="bg-dark text-white">Start date</th>
+                      <th className="bg-dark text-white">Mode</th>
                       <th className="bg-dark text-white"></th>
                     </tr>
                   </thead>
@@ -174,11 +179,14 @@ const ProjectList = () => {
                               {serialNo(queryParams.get("page")) + index}.
                             </td>
                             <td>{r.name.toUpperCase()}</td>
+                            <td>{r.dept_name.toUpperCase()}</td>
+                            <td>{dateFormat(r.start_date)}</td>
+                            <td>{r.mode_name.toUpperCase()}</td>
                             <td className="text-nowrap">
                               <button
                                 type="button"
                                 className="btn btn-primary btn-sm me-2"
-                                // onClick={() => handleView(r.uuid)}
+                                onClick={() => dispatch(setViewModal(r.id))}
                               >
                                 <IoFolderOpen size={14} />
                               </button>
@@ -205,6 +213,7 @@ const ProjectList = () => {
                 </table>
               </div>
             </div>
+            <ViewProject />
             <PaginationContainer
               pageCount={pageCount}
               currentPage={currentPage}

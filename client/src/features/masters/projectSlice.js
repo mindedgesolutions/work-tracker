@@ -8,6 +8,7 @@ const initialState = {
   contacts: [],
   disabled: true,
   editIndex: "",
+  viewModal: false,
 };
 
 const projectSlice = createSlice({
@@ -68,6 +69,13 @@ const projectSlice = createSlice({
     setDbContacts: (state, action) => {
       state.contacts = action.payload;
     },
+    setViewModal: (state, action) => {
+      state.projectId = action.payload;
+      state.viewModal = true;
+    },
+    unsetViewModal: (state) => {
+      state.viewModal = false;
+    },
   },
 });
 
@@ -85,5 +93,7 @@ export const {
   unsetContacts,
   unsetEditId,
   setDbContacts,
+  setViewModal,
+  unsetViewModal,
 } = projectSlice.actions;
 export default projectSlice.reducer;

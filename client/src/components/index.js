@@ -14,3 +14,4 @@ export { default as AddEditProject } from "./rolesPermissions/AddEditProject";
 export { default as ProjectDeleteModal } from "./rolesPermissions/ProjectDeleteModal";
 export { default as AddEditPermission } from "./rolesPermissions/AddEditPermission";
 export { default as PermissionDeleteModal } from "./rolesPermissions/PermissionDeleteModal";
+export { default as ViewProject } from "./rolesPermissions/ViewProject";
