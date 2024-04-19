@@ -20,6 +20,13 @@ import {
   projectContact,
   updateProject,
 } from "../controller/masters/projectController.js";
+import {
+  addNewPermission,
+  deletePermission,
+  getAllPermissions,
+  getPermissionWithPagination,
+  updatePermission,
+} from "../controller/masters/permissionController.js";
 
 router.get(`/all-roles`, getAllRoles);
 router
@@ -38,5 +45,15 @@ router
   .route(`/projects/:id`)
   .patch(validateProject, updateProject)
   .delete(deleteProject);
+
+router.get(`/all-permissions`, getAllPermissions);
+router
+  .route(`/permissions`)
+  .get(getPermissionWithPagination)
+  .post(addNewPermission);
+router
+  .route(`/permissions/:id`)
+  .patch(updatePermission)
+  .delete(deletePermission);
 
 export default router;

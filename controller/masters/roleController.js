@@ -3,6 +3,8 @@ import pool from "../../db.js";
 import { paginationLogic } from "../../utils/pagination.js";
 import slug from "slug";
 
+// ------
+
 export const addNewRole = async (req, res) => {
   const { name } = req.body;
   const nameSlug = slug(name);
@@ -13,6 +15,8 @@ export const addNewRole = async (req, res) => {
 
   res.status(StatusCodes.CREATED).json({ data });
 };
+
+// ------
 
 export const updateRole = async (req, res) => {
   const { name } = req.body;
@@ -26,13 +30,19 @@ export const updateRole = async (req, res) => {
   res.status(StatusCodes.OK).json({ data });
 };
 
+// ------
+
 export const deleteRole = async (req, res) => {};
+
+// ------
 
 export const getAllRoles = async (req, res) => {
   const data = await pool.query(`select * from roles`, []);
 
   res.status(StatusCodes.OK).json({ data });
 };
+
+// ------
 
 export const getRoleWithPagination = async (req, res) => {
   const { name, page } = req.query;

@@ -29,6 +29,7 @@ const AddEditProject = () => {
   const { addModal, projectId, contacts, listProject } = useSelector(
     (store) => store.projects
   );
+  const { changeCount } = useSelector((store) => store.common);
   const project = listProject.find((i) => i.id === projectId);
 
   const [form, setForm] = useState({
@@ -65,6 +66,8 @@ const AddEditProject = () => {
 
       dispatch(updateChangeCount());
       dispatch(unsetAddModal());
+      dispatch(unsetProjectId());
+      dispatch(unsetEditId());
       dispatch(unsetContacts());
 
       setForm({ ...form, pname: "", desc: "", pmode: "", pdept: "" });
@@ -92,7 +95,7 @@ const AddEditProject = () => {
     setStartDate(project?.start_date || new Date());
     setEndDate(project?.end_date);
     dispatch(setDbContacts(project?.contacts));
-  }, [projectId]);
+  }, [projectId, changeCount]);
 
   return (
     <Modal show={addModal} size="lg" onHide={handleClose}>

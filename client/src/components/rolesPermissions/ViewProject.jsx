@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   setAddModal,
   setProjectId,
+  unsetProjectId,
   unsetViewModal,
 } from "../../features/masters/projectSlice";
 import { dateFormat } from "../../../utils/functions";
@@ -19,6 +20,7 @@ const ViewProject = () => {
 
   const handleClose = () => {
     dispatch(unsetViewModal());
+    dispatch(unsetProjectId());
   };
 
   const openEditModal = () => {

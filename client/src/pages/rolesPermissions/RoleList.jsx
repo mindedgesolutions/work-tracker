@@ -22,7 +22,6 @@ import {
   setRoleId,
   setRoles,
 } from "../../features/masters/roleSlice";
-import { updateChangeCount } from "../../features/common/commonSlice";
 
 const RoleList = () => {
   document.title = `List of Roles | ${import.meta.env.VITE_APP_TITLE}`;
@@ -87,7 +86,7 @@ const RoleList = () => {
         <div className="col-8">
           <div className="card">
             <div className="card-header">
-              Total {totalRecords} users found
+              Total {totalRecords} roles found
               <div className="col-auto ms-auto d-print-none">
                 <Form method="GET">
                   <div className="btn-list">

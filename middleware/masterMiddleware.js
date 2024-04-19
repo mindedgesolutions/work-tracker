@@ -27,6 +27,8 @@ export const validateRole = withValidationErrors([
     }),
 ]);
 
+export const validatePermission = withValidationErrors([]);
+
 export const validateProject = withValidationErrors([
   body("pname").notEmpty().withMessage(`Project name is required`),
   body("pdept").notEmpty().withMessage(`Select department`),

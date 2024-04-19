@@ -25,7 +25,7 @@ export const addNewProject = async (req, res) => {
   const createdAt = currentDate();
   const updatedAt = currentDate();
 
-  if (contacts.length === 0) {
+  if (!contacts || contacts.length === 0) {
     throw new BadRequestError(
       `At least one contact is required for the project`
     );
@@ -71,6 +71,12 @@ export const updateProject = async (req, res) => {
   const start = formatDate(startDate);
   const end = endDate ? formatDate(endDate) : null;
   const updatedAt = currentDate();
+
+  if (contacts.length === 0) {
+    throw new BadRequestError(
+      `At least one contact is required for the project`
+    );
+  }
 
   try {
     await pool.query(`BEGIN`);
