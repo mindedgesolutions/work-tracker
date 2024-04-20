@@ -3,7 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   roles: [],
   listRole: [],
-  roleId: null,
+  roleId: "",
 };
 
 const roleSlice = createSlice({
@@ -22,7 +22,7 @@ const roleSlice = createSlice({
       state.roleId = action.payload;
     },
     unsetRoleId: (state) => {
-      state.roleId = null;
+      state.roleId = "";
     },
   },
 });

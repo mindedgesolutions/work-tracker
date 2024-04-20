@@ -5,7 +5,7 @@ import { splitErrors } from "../../../utils/showErrors";
 import { useDispatch, useSelector } from "react-redux";
 import { updateChangeCount } from "../../features/common/commonSlice";
 import { toast } from "react-toastify";
-import { unsetRoleId } from "../../features/masters/roleSlice";
+import { setRoles, unsetRoleId } from "../../features/masters/roleSlice";
 
 const AddEditRole = () => {
   const dispatch = useDispatch();
@@ -27,9 +27,11 @@ const AddEditRole = () => {
     const apiUrl = roleId ? `/masters/roles/${roleId}` : `/masters/roles`;
     try {
       const response = await process(apiUrl, data);
+      const dbRoles = await customFetch.get(`/masters/all-roles`);
 
       dispatch(updateChangeCount());
       dispatch(unsetRoleId());
+      dispatch(setRoles(dbRoles.data.data.rows));
       setForm({ ...form, name: "" });
       setIsLoading(false);
       toast.success(msg);
@@ -54,7 +56,9 @@ const AddEditRole = () => {
     <div className="col-4">
       <div className="card">
         <div className="card-header pb-0">
-          <h3 className="card title border-0">Add new role</h3>
+          <h3 className="card title border-0">
+            {roleId ? `Update details` : `Add new role`}
+          </h3>
         </div>
         <form method="post" onSubmit={handleSubmit} autoComplete="off">
           <div className="card-body">
@@ -74,7 +78,10 @@ const AddEditRole = () => {
             </div>
           </div>
           <div className="mt-2 card-footer text-end">
-            <SubmitBtn isLoading={isLoading} text={`Add role`} />
+            <SubmitBtn
+              isLoading={isLoading}
+              text={roleId ? `Save changes` : `Add role`}
+            />
             <button
               type="button"
               className="btn btn-md btn-default ms-3"

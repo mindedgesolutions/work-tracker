@@ -10,10 +10,12 @@ import customFetch from "../../../utils/customFetch.js";
 import { splitErrors } from "../../../utils/showErrors.jsx";
 import { setRoles } from "../../features/masters/roleSlice.js";
 import { setProjects } from "../../features/masters/projectSlice.js";
+import { setPermissions } from "../../features/masters/permissionSlice.js";
 
 export const loader = (store) => async () => {
   const { roles } = store.getState().roles;
   const { projects } = store.getState().projects;
+  const { permissions } = store.getState().permissions;
   try {
     if (roles.length === 0) {
       const dbRole = await customFetch.get(`/masters/all-roles`);
@@ -22,6 +24,10 @@ export const loader = (store) => async () => {
     if (projects.length === 0) {
       const dbProject = await customFetch.get(`/masters/all-projects`);
       store.dispatch(setProjects(dbProject.data.data.rows));
+    }
+    if (permissions.length === 0) {
+      const dbPermissions = await customFetch.get(`/masters/all-permissions`);
+      store.dispatch(setPermissions(dbPermissions.data.data.rows));
     }
     return null;
   } catch (error) {

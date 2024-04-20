@@ -27,7 +27,7 @@ export const updateRole = async (req, res) => {
     [name, nameSlug, id]
   );
 
-  res.status(StatusCodes.OK).json({ data });
+  res.status(StatusCodes.ACCEPTED).json({ data });
 };
 
 // ------

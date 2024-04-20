@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   AddEditPermission,
   PageHeader,
@@ -14,10 +14,16 @@ import { serialNo } from "../../../utils/functions";
 import { nanoid } from "nanoid";
 import { MdOutlineModeEdit } from "react-icons/md";
 import { FaRegTrashCan } from "react-icons/fa6";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import customFetch from "../../../utils/customFetch";
+import {
+  setListPermission,
+  setPermissionId,
+} from "../../features/masters/permissionSlice";
+import { splitErrors } from "../../../utils/showErrors";
 
 const PermissionList = () => {
-  document.title = `List of Permissions | ${import.meta.env.VITE_APP_TITLE}`;
+  document.title = `List of Permissions | ${import.meta.env.VITE_ADMIN_TITLE}`;
   const returnUrl = `/admin/permissions`;
 
   const dispatch = useDispatch();
@@ -26,12 +32,44 @@ const PermissionList = () => {
   const queryParams = new URLSearchParams(search);
   const [searchInput, setSearchInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [metaData, setMetaData] = useState([]);
 
-  const listRole = [];
-  const pageCount = 0;
-  const currentPage = 0;
+  const { listPermission } = useSelector((store) => store.permissions);
+  const { changeCount } = useSelector((store) => store.common);
 
-  const resetSearch = () => {};
+  const fetchData = async () => {
+    setIsLoading(true);
+    try {
+      const response = await customFetch.get(`/masters/permissions`, {
+        params: {
+          name: queryParams.get("s") || "",
+          page: queryParams.get("page") || "",
+        },
+      });
+
+      setMetaData(response.data.meta);
+      dispatch(setListPermission(response.data.data.rows));
+
+      setIsLoading(false);
+    } catch (error) {
+      setIsLoading(false);
+      splitErrors(error?.response?.data?.msg);
+      return error;
+    }
+  };
+
+  const pageCount = metaData?.totalPages;
+  const currentPage = metaData?.currentPage;
+  const totalRecords = metaData?.totalRecords || 0;
+
+  const resetSearch = () => {
+    setSearchInput("");
+    navigate(returnUrl);
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, [queryParams.get("s"), queryParams.get("page"), changeCount]);
 
   return (
     <>
@@ -46,7 +84,7 @@ const PermissionList = () => {
         <div className="col-8">
           <div className="card">
             <div className="card-header">
-              Total 10 permissions found
+              Total {totalRecords} permissions found
               <div className="col-auto ms-auto d-print-none">
                 <Form method="GET">
                   <div className="btn-list">
@@ -99,14 +137,14 @@ const PermissionList = () => {
                           <TableLoader />
                         </td>
                       </tr>
-                    ) : listRole?.length === 0 ? (
+                    ) : listPermission?.length === 0 ? (
                       <tr>
                         <td colSpan={5} className="text-center">
                           NO DATA FOUND
                         </td>
                       </tr>
                     ) : (
-                      listRole?.map((r, index) => {
+                      listPermission?.map((r, index) => {
                         return (
                           <tr key={nanoid()}>
                             <td>
@@ -124,7 +162,7 @@ const PermissionList = () => {
                               <button
                                 type="button"
                                 className="btn btn-success btn-sm me-2"
-                                onClick={() => dispatch(setRoleId(r.id))}
+                                onClick={() => dispatch(setPermissionId(r.id))}
                               >
                                 <MdOutlineModeEdit />
                               </button>

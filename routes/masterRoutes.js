@@ -8,6 +8,7 @@ import {
   updateRole,
 } from "../controller/masters/roleController.js";
 import {
+  validatePermission,
   validateProject,
   validateProjectContact,
   validateRole,
@@ -50,7 +51,7 @@ router.get(`/all-permissions`, getAllPermissions);
 router
   .route(`/permissions`)
   .get(getPermissionWithPagination)
-  .post(addNewPermission);
+  .post(validatePermission, addNewPermission);
 router
   .route(`/permissions/:id`)
   .patch(updatePermission)

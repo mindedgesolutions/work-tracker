@@ -27,7 +27,25 @@ export const validateRole = withValidationErrors([
     }),
 ]);
 
-export const validatePermission = withValidationErrors([]);
+export const validatePermission = withValidationErrors([
+  body("name")
+    .notEmpty()
+    .withMessage(`Permission name is required`)
+    .custom(async (value, { req }) => {
+      const { id } = req.params;
+      const input = slug(value);
+      const condition = id ? `slug=$1 and id!=$2` : `slug=$1`;
+      const values = id ? [input, id] : [input];
+      const check = await pool.query(
+        `select count(id) from permissions where ${condition}`,
+        values
+      );
+      if (Number(check.rows[0].count) > 0) {
+        throw new BadRequestError(`Permission exists`);
+      }
+      return true;
+    }),
+]);
 
 export const validateProject = withValidationErrors([
   body("pname").notEmpty().withMessage(`Project name is required`),

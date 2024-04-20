@@ -24,7 +24,7 @@ import {
 } from "../../features/masters/roleSlice";
 
 const RoleList = () => {
-  document.title = `List of Roles | ${import.meta.env.VITE_APP_TITLE}`;
+  document.title = `List of Roles | ${import.meta.env.VITE_ADMIN_TITLE}`;
   const returnUrl = `/admin/roles`;
 
   const navigate = useNavigate();
@@ -35,7 +35,7 @@ const RoleList = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [metaData, setMetaData] = useState([]);
 
-  const { listRole } = useSelector((store) => store.roles);
+  const { listRole, roles } = useSelector((store) => store.roles);
   const { changeCount } = useSelector((store) => store.common);
 
   const fetchData = async () => {
@@ -50,7 +50,6 @@ const RoleList = () => {
 
       setMetaData(response.data.meta);
       dispatch(setListRole(response.data.data.rows));
-      dispatch(setRoles(response.data.data.rows));
 
       setIsLoading(false);
     } catch (error) {
