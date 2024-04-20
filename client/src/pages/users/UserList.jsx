@@ -24,6 +24,8 @@ import { nanoid } from "nanoid";
 import { IoFolderOpen } from "react-icons/io5";
 import { MdOutlineModeEdit } from "react-icons/md";
 import { FaRegTrashCan } from "react-icons/fa6";
+import { MdOutlinePowerSettingsNew } from "react-icons/md";
+import { updateChangeCount } from "../../features/common/commonSlice";
 
 const UserList = () => {
   document.title = `List of Users | ${import.meta.env.VITE_ADMIN_TITLE}`;
@@ -78,6 +80,19 @@ const UserList = () => {
   const handleView = (uuid) => {
     dispatch(setUserUuid(uuid));
     dispatch(setShowModal({ type: "view" }));
+  };
+
+  const activateUser = async (id) => {
+    setIsLoading(true);
+    try {
+      await customFetch.patch(`/user/users/activate/${id}`);
+      dispatch(updateChangeCount());
+      setIsLoading(false);
+    } catch (error) {
+      setIsLoading(false);
+      splitErrors(error?.response?.data?.msg);
+      return error;
+    }
   };
 
   const handleDelete = (uuid) => {
@@ -203,20 +218,34 @@ const UserList = () => {
                               >
                                 <IoFolderOpen size={14} />
                               </button>
-                              <button
-                                type="button"
-                                className="btn btn-success btn-sm me-2"
-                                onClick={() => dispatch(setUserUuid(u.uuid))}
-                              >
-                                <MdOutlineModeEdit />
-                              </button>
-                              <button
-                                type="button"
-                                className="btn btn-danger btn-sm me-2"
-                                onClick={() => handleDelete(u.uuid)}
-                              >
-                                <FaRegTrashCan />
-                              </button>
+                              {u.is_active ? (
+                                <>
+                                  <button
+                                    type="button"
+                                    className="btn btn-success btn-sm me-2"
+                                    onClick={() =>
+                                      dispatch(setUserUuid(u.uuid))
+                                    }
+                                  >
+                                    <MdOutlineModeEdit />
+                                  </button>
+                                  <button
+                                    type="button"
+                                    className="btn btn-danger btn-sm me-2"
+                                    onClick={() => handleDelete(u.uuid)}
+                                  >
+                                    <FaRegTrashCan />
+                                  </button>
+                                </>
+                              ) : (
+                                <button
+                                  type="button"
+                                  className="btn btn-warning btn-sm me-2"
+                                  onClick={() => activateUser(u.id)}
+                                >
+                                  <MdOutlinePowerSettingsNew />
+                                </button>
+                              )}
                             </td>
                           </tr>
                         );

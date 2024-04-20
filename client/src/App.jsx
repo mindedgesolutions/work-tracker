@@ -20,6 +20,7 @@ const router = createBrowserRouter([
       { path: "roles", element: <Wt.RoleList /> },
       { path: "projects", element: <Wt.ProjectList /> },
       { path: "permissions", element: <Wt.PermissionList /> },
+      { path: "role-permissions", element: <Wt.RolePermission /> },
     ],
   },
   {

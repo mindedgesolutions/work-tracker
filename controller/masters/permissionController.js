@@ -32,6 +32,17 @@ export const updatePermission = async (req, res) => {
 
 // ------
 
+export const activateUser = async (req, res) => {
+  const { id } = req.params;
+  const data = await pool.query(`update users set is_active=true where id=$1`, [
+    id,
+  ]);
+
+  res.status(StatusCodes.OK).json({ data });
+};
+
+// ------
+
 export const deletePermission = async (req, res) => {};
 
 // ------
