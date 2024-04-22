@@ -66,7 +66,7 @@ const RolePermission = () => {
 
   useEffect(() => {
     fetchData();
-  }, [queryParams.get("s"), queryParams.get("page"), changeCount]);
+  }, [queryParams.get("s"), queryParams.get("page")]);
 
   return (
     <>

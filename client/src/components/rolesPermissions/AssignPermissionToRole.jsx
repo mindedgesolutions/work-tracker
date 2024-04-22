@@ -9,7 +9,7 @@ import { splitErrors } from "../../../utils/showErrors";
 import customFetch from "../../../utils/customFetch";
 import { updateChangeCount } from "../../features/common/commonSlice";
 import { toast } from "react-toastify";
-import { setRoles } from "../../features/masters/roleSlice";
+import { setListRole, setRoles } from "../../features/masters/roleSlice";
 
 const AssignPermissionToRole = () => {
   const dispatch = useDispatch();
@@ -64,6 +64,7 @@ const AssignPermissionToRole = () => {
       dispatch(updateChangeCount());
       dispatch(unsetRolePermissionModal());
       dispatch(setRoles(response.data.data.rows));
+      dispatch(setListRole(response.data.data.rows));
 
       setIsLoading(false);
       setSelectedPermissions([]);
