@@ -162,13 +162,13 @@ const ProjectList = () => {
                   <tbody>
                     {isLoading ? (
                       <tr>
-                        <td colSpan={3}>
+                        <td colSpan={6}>
                           <TableLoader />
                         </td>
                       </tr>
                     ) : listProject?.length === 0 ? (
                       <tr>
-                        <td colSpan={5} className="text-center">
+                        <td colSpan={6} className="text-center">
                           NO DATA FOUND
                         </td>
                       </tr>
@@ -197,13 +197,6 @@ const ProjectList = () => {
                                 onClick={() => handleEdit(r.id)}
                               >
                                 <MdOutlineModeEdit />
-                              </button>
-                              <button
-                                type="button"
-                                className="btn btn-danger btn-sm me-2"
-                                // onClick={() => handleDelete(r.uuid)}
-                              >
-                                <FaRegTrashCan />
                               </button>
                             </td>
                           </tr>

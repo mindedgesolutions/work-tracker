@@ -37,7 +37,20 @@ export const deleteRole = async (req, res) => {};
 // ------
 
 export const getAllRoles = async (req, res) => {
-  const data = await pool.query(`select * from roles`, []);
+  const data = await pool.query(
+    `select roles.*,
+    json_agg(
+      json_build_object(
+        'id', pr.id,
+        'name', pr.name
+      )
+    ) as permissions
+    from roles
+    left join map_role_permission mrp on mrp.role_id = roles.id
+    left join permissions pr on pr.id = mrp.permission_id
+    group by roles.id order by roles.name`,
+    []
+  );
 
   res.status(StatusCodes.OK).json({ data });
 };
@@ -47,10 +60,20 @@ export const getAllRoles = async (req, res) => {
 export const getRoleWithPagination = async (req, res) => {
   const { name, page } = req.query;
   const pagination = paginationLogic(page, null);
-  let search = name ? `where name ilike '%${name}%'` : ``;
+  let search = name ? `where roles.name ilike '%${name}%'` : ``;
 
   const data = await pool.query(
-    `select * from roles ${search} group by id order by name offset $1 limit $2`,
+    `select roles.*,
+    json_agg(
+      json_build_object(
+        'id', pr.id,
+        'name', pr.name
+      )
+    ) as permissions
+    from roles
+    left join map_role_permission mrp on mrp.role_id = roles.id
+    left join permissions pr on pr.id = mrp.permission_id
+    ${search} group by roles.id order by roles.name offset $1 limit $2`,
     [pagination.offset, pagination.pageLimit]
   );
 

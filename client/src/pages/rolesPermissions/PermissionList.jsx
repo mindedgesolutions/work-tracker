@@ -4,7 +4,6 @@ import {
   PageHeader,
   PageWrapper,
   PaginationContainer,
-  PermissionDeleteModal,
   TableLoader,
 } from "../../components";
 import { Form, useLocation, useNavigate } from "react-router-dom";
@@ -154,24 +153,10 @@ const PermissionList = () => {
                             <td className="text-nowrap">
                               <button
                                 type="button"
-                                className="btn btn-primary btn-sm me-2"
-                                // onClick={() => handleView(r.uuid)}
-                              >
-                                <IoFolderOpen size={14} />
-                              </button>
-                              <button
-                                type="button"
                                 className="btn btn-success btn-sm me-2"
                                 onClick={() => dispatch(setPermissionId(r.id))}
                               >
                                 <MdOutlineModeEdit />
-                              </button>
-                              <button
-                                type="button"
-                                className="btn btn-danger btn-sm me-2"
-                                // onClick={() => handleDelete(r.uuid)}
-                              >
-                                <FaRegTrashCan />
                               </button>
                             </td>
                           </tr>
@@ -189,7 +174,6 @@ const PermissionList = () => {
           </div>
         </div>
         <AddEditPermission />
-        <PermissionDeleteModal />
       </PageWrapper>
     </>
   );

@@ -13,3 +13,4 @@ export { default as PermissionList } from "./rolesPermissions/PermissionList";
 export { default as RoleList } from "./rolesPermissions/RoleList";
 export { default as ProjectList } from "./rolesPermissions/ProjectList";
 export { default as RolePermission } from "./rolesPermissions/RolePermission";
+export { default as UserPermission } from "./rolesPermissions/UserPermission";

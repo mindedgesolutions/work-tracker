@@ -75,3 +75,66 @@ export const getPermissionWithPagination = async (req, res) => {
 
   res.status(StatusCodes.OK).json({ data, meta });
 };
+
+// ------
+
+export const assignPermissionToRole = async (req, res) => {
+  const { role, permissions } = req.body;
+
+  try {
+    await pool.query(`BEGIN`);
+
+    // Role v Permission starts ------
+    await pool.query(`delete from map_role_permission where role_id=$1`, [
+      role,
+    ]);
+
+    for (const permission of permissions) {
+      await pool.query(
+        `insert into map_role_permission(role_id, permission_id) values($1, $2)`,
+        [role, permission.value]
+      );
+    }
+    // Role v Permission ends ------
+
+    // User v Permission starts ------
+    const userIds = await pool.query(`select id from users where role_id=$1`, [
+      role,
+    ]);
+    for (const userId of userIds.rows) {
+      await pool.query(`delete from map_user_permission where user_id=$1`, [
+        userId.id,
+      ]);
+
+      for (const permission of permissions) {
+        await pool.query(
+          `insert into map_user_permission(user_id, permission_id) values($1, $2)`,
+          [userId.id, permission.value]
+        );
+      }
+    }
+    // User v Permission ends ------
+
+    await pool.query(`COMMIT`);
+
+    res.status(StatusCodes.CREATED).json({ data: `success` });
+  } catch (error) {
+    await pool.query(`ROLLBACK`);
+    return error;
+  }
+};
+
+// ------
+
+export const assignPermissionToUser = async (req, res) => {
+  const { user, permissions } = req.body;
+
+  try {
+    await pool.query(`BEGIN`);
+
+    await pool.query(`COMMIT`);
+  } catch (error) {
+    await pool.query(`ROLLBACK`);
+    return error;
+  }
+};

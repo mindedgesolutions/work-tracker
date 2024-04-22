@@ -23,6 +23,7 @@ import {
 } from "../controller/masters/projectController.js";
 import {
   addNewPermission,
+  assignPermissionToRole,
   deletePermission,
   getAllPermissions,
   getPermissionWithPagination,
@@ -56,5 +57,6 @@ router
   .route(`/permissions/:id`)
   .patch(updatePermission)
   .delete(deletePermission);
+router.post(`/role-permissions`, assignPermissionToRole);
 
 export default router;
