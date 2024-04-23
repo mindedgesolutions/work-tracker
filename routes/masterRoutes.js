@@ -24,6 +24,7 @@ import {
 import {
   addNewPermission,
   assignPermissionToRole,
+  assignPermissionToUser,
   deletePermission,
   getAllPermissions,
   getPermissionWithPagination,
@@ -58,5 +59,6 @@ router
   .patch(updatePermission)
   .delete(deletePermission);
 router.post(`/role-permissions`, assignPermissionToRole);
+router.post(`/user-permissions`, assignPermissionToUser);
 
 export default router;

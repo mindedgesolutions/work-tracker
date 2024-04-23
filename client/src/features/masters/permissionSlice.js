@@ -36,6 +36,14 @@ const permissionSlice = createSlice({
       state.roleId = "";
       state.rolePermissionModal = false;
     },
+    setUserPermissionModal: (state, action) => {
+      state.userId = action.payload;
+      state.userPermissionModal = true;
+    },
+    unsetUserPermissionModal: (state) => {
+      state.userId = "";
+      state.userPermissionModal = false;
+    },
   },
 });
 
@@ -46,5 +54,7 @@ export const {
   unsetPermissionId,
   setRolePermissionModal,
   unsetRolePermissionModal,
+  setUserPermissionModal,
+  unsetUserPermissionModal,
 } = permissionSlice.actions;
 export default permissionSlice.reducer;

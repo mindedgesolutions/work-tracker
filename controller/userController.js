@@ -59,9 +59,18 @@ export const getUserWithPagination = async (req, res) => {
   let search = name ? `where um.name ilike '%${name}%'` : ``;
 
   const data = await pool.query(
-    `select um.*, roles.name as role
+    `select um.*,
+    roles.name as role,
+    json_agg(
+      json_build_object(
+        'id', pr.id,
+        'name', pr.name
+      )
+    ) as permissions
     from users as um
     left join roles on roles.id = um.role_id
+    left join map_user_permission mup on mup.user_id = um.id
+    left join permissions pr on pr.id = mup.permission_id
     ${search} group by um.id, roles.name order by um.name offset $1 limit $2`,
     [pagination.offset, pagination.pageLimit]
   );
@@ -76,3 +85,5 @@ export const getUserWithPagination = async (req, res) => {
 
   res.status(StatusCodes.OK).json({ data, meta });
 };
+
+// ------

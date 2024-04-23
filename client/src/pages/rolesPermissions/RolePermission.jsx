@@ -28,7 +28,6 @@ const RolePermission = () => {
   const dispatch = useDispatch();
   const { search } = useLocation();
   const queryParams = new URLSearchParams(search);
-  const { changeCount } = useSelector((store) => store.common);
   const { listRole } = useSelector((store) => store.roles);
 
   const [searchInput, setSearchInput] = useState("");
@@ -150,7 +149,9 @@ const RolePermission = () => {
                             <td>
                               {serialNo(queryParams.get("page")) + index}.
                             </td>
-                            <td>{r.name.toUpperCase()}</td>
+                            <td className="text-nowrap">
+                              {r.name.toUpperCase()}
+                            </td>
                             <td>
                               {r.permissions.map((p) => {
                                 return (
@@ -165,7 +166,7 @@ const RolePermission = () => {
                                 );
                               })}
                             </td>
-                            <td className="text-nowrap">
+                            <td>
                               <button
                                 type="button"
                                 className="btn btn-success btn-sm me-2"

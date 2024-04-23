@@ -127,12 +127,24 @@ export const assignPermissionToRole = async (req, res) => {
 // ------
 
 export const assignPermissionToUser = async (req, res) => {
-  const { user, permissions } = req.body;
+  const { permissions } = req.body;
+  const { id } = req.query;
 
   try {
     await pool.query(`BEGIN`);
 
+    await pool.query(`delete from map_user_permission where user_id=$1`, [id]);
+
+    for (const permission of permissions) {
+      await pool.query(
+        `insert into map_user_permission(user_id, permission_id) values($1, $2)`,
+        [id, permission.value]
+      );
+    }
+
     await pool.query(`COMMIT`);
+
+    res.status(StatusCodes.CREATED).json({ data: `success` });
   } catch (error) {
     await pool.query(`ROLLBACK`);
     return error;

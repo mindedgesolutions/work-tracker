@@ -37,45 +37,33 @@ const ViewProject = () => {
       <Modal.Body>
         <div className="row">
           <div className="col-md-12 col-sm-12">
-            <label htmlFor="pname" className="form-label">
-              Project name :{" "}
-            </label>
+            <label className="form-label">Project name : </label>
             <p>{project?.name?.toUpperCase()}</p>
           </div>
         </div>
         <div className="row mt-2">
           <div className="col-md-12 col-sm-12">
-            <label htmlFor="desc" className="form-label">
-              Project description :{" "}
-            </label>
+            <label className="form-label">Project description : </label>
             <p>{project?.description || `NA`}</p>
           </div>
         </div>
         <div className="row mt-2">
           <div className="col-md-6 col-sm-12">
-            <label htmlFor="pdept" className="form-label">
-              Department :{" "}
-            </label>
+            <label className="form-label">Department : </label>
             <p>{project?.dept_name?.toUpperCase()}</p>
           </div>
           <div className="col-md-6 col-sm-12">
-            <label htmlFor="pmode" className="form-label">
-              Project mode :{" "}
-            </label>
+            <label className="form-label">Project mode : </label>
             <p>{project?.mode_name?.toUpperCase()}</p>
           </div>
         </div>
         <div className="row mt-2">
           <div className="col-md-6 col-sm-12">
-            <label htmlFor="pdept" className="form-label">
-              Start date :{" "}
-            </label>
+            <label className="form-label">Start date : </label>
             <p>{dateFormat(project?.start_date)}</p>
           </div>
           <div className="col-md-6 col-sm-12">
-            <label htmlFor="pmode" className="form-label">
-              End date :{" "}
-            </label>
+            <label className="form-label">End date : </label>
             <p>{project?.end_date ? dateFormat(project?.end_date) : `NA`}</p>
           </div>
         </div>
