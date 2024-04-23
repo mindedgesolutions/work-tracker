@@ -44,9 +44,12 @@ export const formatStartDate = (date) => {
 };
 
 // JWT token starts ------
-export const createJWT = (payload) => {
+export const createJWT = (uuid, remember) => {
+  const payload = { uuid: uuid };
   const token = jwt.sign(payload, process.env.JWT_SECRET_ADMIN, {
-    expiresIn: process.env.JWT_EXPIRY,
+    expiresIn: remember
+      ? process.env.JWT_EXPIRY_LONG
+      : process.env.JWT_EXPIRY_SHORT,
   });
   return token;
 };

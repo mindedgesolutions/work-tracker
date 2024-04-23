@@ -7,6 +7,7 @@ import { setCaptcha } from "../../features/auth/authSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { MdOutlineRefresh } from "react-icons/md";
 import { splitErrors } from "../../../utils/showErrors";
+import customFetch from "../../../utils/customFetch";
 
 // Action starts ------
 export const action =
@@ -17,11 +18,20 @@ export const action =
     let data = Object.fromEntries(formData);
     data = { ...data, captcha: captcha };
     try {
+      const response = await customFetch.post(`/auth/login`, data);
+
+      if (response.data.data === 1 || response.data.data === 2) {
+        return redirect(`/admin/dashboard`);
+      } else if (response.data.data === 3 || response.data.data === 4) {
+        return redirect(`/lead/dashboard`);
+      } else {
+        return redirect(`/user/dashboard`);
+      }
     } catch (error) {
+      store.dispatch(setCaptcha());
       splitErrors(error?.response?.data?.msg);
       return redirect("/");
     }
-    return null;
   };
 
 // Main component starts ------
@@ -36,9 +46,14 @@ const Login = () => {
     inputCaptcha: "",
   });
   const [remember, setRemember] = useState(false);
+  const [type, setType] = useState("password");
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleChangeType = () => {
+    setType(type === "password" ? "text" : "password");
   };
 
   useEffect(() => {
@@ -83,7 +98,7 @@ const Login = () => {
               </label>
               <div htmlFor="password" className="input-group input-group-flat">
                 <input
-                  type="password"
+                  type={type}
                   className="form-control"
                   placeholder="Your password"
                   name="password"
@@ -96,6 +111,7 @@ const Login = () => {
                     className="link-secondary cursor-pointer"
                     title="Show password"
                     size={18}
+                    onClick={handleChangeType}
                   />
                 </span>
               </div>
