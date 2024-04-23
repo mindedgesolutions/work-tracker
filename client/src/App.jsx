@@ -5,8 +5,11 @@ import { store } from "./store";
 // Loaders start ------
 import { loader as AdminLayoutLoader } from "./pages/layouts/AdminLayout";
 
+// Action starts ------
+import { action as LoginAction } from "./pages/auth/Login";
+
 const router = createBrowserRouter([
-  { path: "/", element: <Wt.Login /> },
+  { path: "/", element: <Wt.Login />, action: LoginAction(store) },
   { path: "/forgot-password", element: <Wt.ForgotPassword /> },
   { path: "/profile", element: <Wt.Profile /> },
   { path: "/change-password", element: <Wt.ChangePassword /> },
