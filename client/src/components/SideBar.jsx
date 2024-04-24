@@ -7,21 +7,25 @@ import { BsFillMoonFill, BsSunFill } from "react-icons/bs";
 import { GrUserSettings } from "react-icons/gr";
 import { FiUsers } from "react-icons/fi";
 import { useSelector } from "react-redux";
+import { FaTasks } from "react-icons/fa";
 
 const SideBar = () => {
   const { loggedInUser } = useSelector((store) => store.auth);
   const prArray = loggedInUser?.permissions;
 
-  let homeUrl;
+  let homeUrl, taskUrl;
   switch (loggedInUser.role_id) {
     case 1 || 2:
       homeUrl = `/admin/dashboard`;
+      taskUrl = `/admin/tasks`;
       break;
     case 3 || 4:
       homeUrl = `/lead/dashboard`;
+      taskUrl = `/lead/tasks`;
       break;
     default:
       homeUrl = `/user/dashboard`;
+      taskUrl = `/user/tasks`;
       break;
   }
 
@@ -156,6 +160,15 @@ const SideBar = () => {
                 </Link>
               </li>
             )}
+
+            <li className="nav-item">
+              <Link className="nav-link" to={taskUrl}>
+                <span className="nav-link-icon d-md-none d-lg-inline-block">
+                  <FaTasks size={18} />
+                </span>
+                <span className="nav-link-title">Tasks</span>
+              </Link>
+            </li>
           </ul>
         </div>
       </div>

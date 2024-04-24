@@ -30,19 +30,26 @@ const router = createBrowserRouter([
         element: <Wt.RolePermission />,
       },
       { path: "user-permissions", element: <Wt.UserPermission /> },
+      { path: "tasks", element: <Wt.TaskAdmin /> },
     ],
   },
   {
     path: "/lead",
     element: <Wt.LeadLayout />,
     loader: LeadLayoutLoader(store),
-    children: [{ path: "dashboard", element: <Wt.LeadDashboard /> }],
+    children: [
+      { path: "dashboard", element: <Wt.LeadDashboard /> },
+      { path: "tasks", element: <Wt.TaskLead /> },
+    ],
   },
   {
     path: "/user",
     element: <Wt.UserLayout />,
     loader: UserLayoutLoader(store),
-    children: [{ path: "dashboard", element: <Wt.UserDashboard /> }],
+    children: [
+      { path: "dashboard", element: <Wt.UserDashboard /> },
+      { path: "tasks", element: <Wt.TaskUser /> },
+    ],
   },
 ]);
 
