@@ -72,7 +72,9 @@ const AddEditUser = () => {
     <div className="col-4">
       <div className="card">
         <div className="card-header pb-0">
-          <h3 className="card title border-0">Add new employee</h3>
+          <h3 className="card title border-0">
+            {user ? `Update details` : `Add new user`}
+          </h3>
         </div>
         <form method="post" onSubmit={handleSubmit} autoComplete="off">
           <div className="card-body">

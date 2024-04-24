@@ -138,7 +138,7 @@ const PermissionList = () => {
                       </tr>
                     ) : listPermission?.length === 0 ? (
                       <tr>
-                        <td colSpan={5} className="text-center">
+                        <td colSpan={3} className="text-center">
                           NO DATA FOUND
                         </td>
                       </tr>

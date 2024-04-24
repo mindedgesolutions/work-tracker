@@ -8,6 +8,7 @@ import {
   updateRole,
 } from "../controller/masters/roleController.js";
 import {
+  validateMenu,
   validatePermission,
   validateProject,
   validateProjectContact,
@@ -30,6 +31,12 @@ import {
   getPermissionWithPagination,
   updatePermission,
 } from "../controller/masters/permissionController.js";
+import {
+  addNewMenu,
+  getAllMenus,
+  getMenuWithPagination,
+  updateMenu,
+} from "../controller/masters/menuController.js";
 
 router.get(`/all-roles`, getAllRoles);
 router
@@ -60,5 +67,12 @@ router
   .delete(deletePermission);
 router.post(`/role-permissions`, assignPermissionToRole);
 router.post(`/user-permissions`, assignPermissionToUser);
+
+router.get(`/all-menus`, getAllMenus);
+router
+  .route(`/menus`)
+  .get(getMenuWithPagination)
+  .post(validateMenu, addNewMenu);
+router.patch(`/menus/:id`, updateMenu);
 
 export default router;

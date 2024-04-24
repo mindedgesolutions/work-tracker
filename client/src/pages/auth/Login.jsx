@@ -19,14 +19,19 @@ export const action =
     data = { ...data, captcha: captcha };
     try {
       const response = await customFetch.post(`/auth/login`, data);
-
-      if (response.data.data === 1 || response.data.data === 2) {
-        return redirect(`/admin/dashboard`);
-      } else if (response.data.data === 3 || response.data.data === 4) {
-        return redirect(`/lead/dashboard`);
-      } else {
-        return redirect(`/user/dashboard`);
+      let redirectUrl;
+      switch (response.data.data) {
+        case 1 || 2:
+          redirectUrl = `/admin/dashboard`;
+          break;
+        case 3 || 4:
+          redirectUrl = `/lead/dashboard`;
+          break;
+        default:
+          redirectUrl = `/user/dashboard`;
+          break;
       }
+      return redirect(redirectUrl);
     } catch (error) {
       store.dispatch(setCaptcha());
       splitErrors(error?.response?.data?.msg);

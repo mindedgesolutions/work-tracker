@@ -2,12 +2,29 @@ import React from "react";
 import Logo from "../assets/images/ssy_nic_logo.png";
 import Avatar from "../assets/dist/images/000m.jpg";
 import { Link } from "react-router-dom";
-import { AiOutlineHome, AiOutlineFile } from "react-icons/ai";
-import { BsFillMoonFill, BsSunFill, BsGraphUpArrow } from "react-icons/bs";
+import { AiOutlineHome } from "react-icons/ai";
+import { BsFillMoonFill, BsSunFill } from "react-icons/bs";
 import { GrUserSettings } from "react-icons/gr";
 import { FiUsers } from "react-icons/fi";
+import { useSelector } from "react-redux";
 
 const SideBar = () => {
+  const { loggedInUser } = useSelector((store) => store.auth);
+  const prArray = loggedInUser?.permissions;
+
+  let homeUrl;
+  switch (loggedInUser.role_id) {
+    case 1 || 2:
+      homeUrl = `/admin/dashboard`;
+      break;
+    case 3 || 4:
+      homeUrl = `/lead/dashboard`;
+      break;
+    default:
+      homeUrl = `/user/dashboard`;
+      break;
+  }
+
   return (
     <aside
       className="navbar navbar-vertical navbar-expand-lg"
@@ -26,11 +43,11 @@ const SideBar = () => {
           <span className="navbar-toggler-icon"></span>
         </button>
         <h1 className="navbar-brand navbar-brand-autodark mb-3">
-          <Link to="/admin/dashboard">
+          <Link to={homeUrl}>
             <img
               src={Logo}
               style={{ height: "40px" }}
-              alt={import.meta.env.VITE_ADMIN_TITLE}
+              alt={import.meta.env.VITE_COMMON_TITLE}
             />
           </Link>
         </h1>
@@ -53,7 +70,7 @@ const SideBar = () => {
               <img
                 src={Avatar}
                 className="avatar avatar-sm cursor-pointer"
-                alt="karmasathi"
+                alt={import.meta.env.VITE_COMMON_TITLE}
               />
             </a>
             <div className="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
@@ -66,101 +83,79 @@ const SideBar = () => {
         <div className="collapse navbar-collapse" id="sidebar-menu">
           <ul className="navbar-nav pt-lg-3">
             <li className="nav-item">
-              <Link className="nav-link" to="/admin/dashboard">
+              <Link className="nav-link" to={homeUrl}>
                 <span className="nav-link-icon d-md-none d-lg-inline-block">
                   <AiOutlineHome size={18} />
                 </span>
                 <span className="nav-link-title">Home</span>
               </Link>
             </li>
-            <li className="nav-item dropdown">
-              <a
-                className="nav-link dropdown-toggle"
-                href="#navbar-extra"
-                data-bs-toggle="dropdown"
-                data-bs-auto-close="false"
-                role="button"
-                aria-expanded="false"
-              >
-                <span className="nav-link-icon d-md-none d-lg-inline-block">
-                  <GrUserSettings size={14} />
-                </span>
-                <span className="nav-link-title">Roles & Permissions</span>
-              </a>
-              <div className="dropdown-menu">
-                <div className="dropdown-menu-columns">
-                  <div className="dropdown-menu-column">
-                    <Link to="/admin/roles" className="dropdown-item">
-                      Roles
-                    </Link>
-                    <Link to="/admin/permissions" className="dropdown-item">
-                      Permissions
-                    </Link>
-                    <Link to="/admin/projects" className="dropdown-item">
-                      Projects
-                    </Link>
-                    <Link
-                      to="/admin/role-permissions"
-                      className="dropdown-item"
-                    >
-                      Permissions (Role-wise)
-                    </Link>
-                    <Link
-                      to="/admin/user-permissions"
-                      className="dropdown-item"
-                    >
-                      Permissions (User-wise)
-                    </Link>
+
+            {prArray?.some((i) => [3, 1, 4, 12, 13].includes(i.id)) && (
+              <li className="nav-item dropdown">
+                <a
+                  className="nav-link dropdown-toggle"
+                  href="#navbar-extra"
+                  data-bs-toggle="dropdown"
+                  data-bs-auto-close="false"
+                  role="button"
+                  aria-expanded="false"
+                >
+                  <span className="nav-link-icon d-md-none d-lg-inline-block">
+                    <GrUserSettings size={14} />
+                  </span>
+                  <span className="nav-link-title">Roles & Permissions</span>
+                </a>
+                <div className="dropdown-menu">
+                  <div className="dropdown-menu-columns">
+                    <div className="dropdown-menu-column">
+                      {prArray?.some((i) => i.id === 3) && (
+                        <Link to="/admin/roles" className="dropdown-item">
+                          Roles
+                        </Link>
+                      )}
+                      {prArray?.some((i) => i.id === 1) && (
+                        <Link to="/admin/permissions" className="dropdown-item">
+                          Permissions
+                        </Link>
+                      )}
+                      {prArray?.some((i) => i.id === 4) && (
+                        <Link to="/admin/projects" className="dropdown-item">
+                          Projects
+                        </Link>
+                      )}
+                      {prArray?.some((i) => i.id === 12) && (
+                        <Link
+                          to="/admin/role-permissions"
+                          className="dropdown-item"
+                        >
+                          Permissions (Role-wise)
+                        </Link>
+                      )}
+                      {prArray?.some((i) => i.id === 13) && (
+                        <Link
+                          to="/admin/user-permissions"
+                          className="dropdown-item"
+                        >
+                          Permissions (User-wise)
+                        </Link>
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
-            </li>
-            <li className="nav-item">
-              <Link className="nav-link" to="/admin/users">
-                <span className="nav-link-icon d-md-none d-lg-inline-block">
-                  <FiUsers size={18} />
-                </span>
-                <span className="nav-link-title">Users</span>
-              </Link>
-            </li>
-            <li className="nav-item dropdown">
-              <a
-                className="nav-link dropdown-toggle"
-                href="#navbar-extra"
-                data-bs-toggle="dropdown"
-                data-bs-auto-close="false"
-                role="button"
-                aria-expanded="false"
-              >
-                <span className="nav-link-icon d-md-none d-lg-inline-block">
-                  <AiOutlineFile size={18} />
-                </span>
-                <span className="nav-link-title">Applications</span>
-              </a>
-              <div className="dropdown-menu">
-                <div className="dropdown-menu-columns">
-                  <div className="dropdown-menu-column">
-                    <Link to="/admin/applications" className="dropdown-item">
-                      All applications
-                    </Link>
-                    <Link
-                      to="/admin/search-application"
-                      className="dropdown-item"
-                    >
-                      Search application
-                    </Link>
-                  </div>
-                </div>
-              </div>
-            </li>
-            <li className="nav-item">
-              <Link className="nav-link" to="/admin/reports">
-                <span className="nav-link-icon d-md-none d-lg-inline-block">
-                  <BsGraphUpArrow size={16} />
-                </span>
-                <span className="nav-link-title">Reports</span>
-              </Link>
-            </li>
+              </li>
+            )}
+
+            {prArray?.some((i) => i.id === 2) && (
+              <li className="nav-item">
+                <Link className="nav-link" to="/admin/users">
+                  <span className="nav-link-icon d-md-none d-lg-inline-block">
+                    <FiUsers size={18} />
+                  </span>
+                  <span className="nav-link-title">Users</span>
+                </Link>
+              </li>
+            )}
           </ul>
         </div>
       </div>

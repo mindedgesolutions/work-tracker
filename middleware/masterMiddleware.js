@@ -78,3 +78,11 @@ export const validateProjectContact = withValidationErrors([
     .custom(isMobileNumber)
     .withMessage(`Invalid mobile no.`),
 ]);
+
+export const validateMenu = withValidationErrors([
+  body("name").notEmpty().withMessage(`Name is required`),
+  body("parentId")
+    .if(body("isParent").equals("true"))
+    .notEmpty()
+    .withMessage(`Select parent`),
+]);
