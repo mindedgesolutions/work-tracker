@@ -3,8 +3,10 @@ import { BsMoonFill, BsSunFill } from "react-icons/bs";
 import Avatar from "../assets/dist/images/000m.jpg";
 import { Link } from "react-router-dom";
 import { FaRegBell } from "react-icons/fa";
+import { useSelector } from "react-redux";
 
 const TopNav = ({ logout }) => {
+  const { loggedInUser } = useSelector((store) => store.auth);
   const [isDarkTheme, setIsDarkTheme] = useState(
     localStorage.getItem("theme") === "dark" ? true : false
   );
@@ -90,8 +92,12 @@ const TopNav = ({ logout }) => {
             >
               <img src={Avatar} className="avatar avatar-sm" alt="" />
               <div className="d-none d-xl-block ps-2">
-                <div className="fw-bold">SOUVIK NAG</div>
-                <div className="mt-1 small text-muted">s.nag26@gmail.com</div>
+                <div className="fw-bold">
+                  {loggedInUser?.name?.toUpperCase()}
+                </div>
+                <div className="mt-1 small text-muted">
+                  {loggedInUser?.email}
+                </div>
               </div>
             </a>
             <div className="dropdown-menu dropdown-menu-end dropdown-menu-arrow">

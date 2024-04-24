@@ -14,6 +14,7 @@ import errorHandlerMiddleware from "./middleware/errorHandlerMiddleware.js";
 import masterRouter from "./routes/masterRoutes.js";
 import userRouter from "./routes/userRoute.js";
 import authRouter from "./routes/authRoute.js";
+import { protectRoute } from "./middleware/protectRouteMiddleware.js";
 
 if (process.env.NODE_ENV === "development") {
   app.use(morgan("dev"));
@@ -23,8 +24,8 @@ app.use(cookieParser());
 app.use(express.json());
 
 // API starts ---
-app.use("/api/v1/masters", masterRouter);
-app.use("/api/v1/user", userRouter);
+app.use("/api/v1/masters", protectRoute, masterRouter);
+app.use("/api/v1/user", protectRoute, userRouter);
 app.use("/api/v1/auth", authRouter);
 // API ends ---
 

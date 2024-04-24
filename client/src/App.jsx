@@ -4,6 +4,8 @@ import { store } from "./store";
 
 // Loaders start ------
 import { loader as AdminLayoutLoader } from "./pages/layouts/AdminLayout";
+import { loader as LeadLayoutLoader } from "./pages/layouts/LeadLayout";
+import { loader as UserLayoutLoader } from "./pages/layouts/UserLayout";
 
 // Action starts ------
 import { action as LoginAction } from "./pages/auth/Login";
@@ -33,11 +35,13 @@ const router = createBrowserRouter([
   {
     path: "/lead",
     element: <Wt.LeadLayout />,
+    loader: LeadLayoutLoader(store),
     children: [{ path: "dashboard", element: <Wt.LeadDashboard /> }],
   },
   {
     path: "/user",
     element: <Wt.UserLayout />,
+    loader: UserLayoutLoader(store),
     children: [{ path: "dashboard", element: <Wt.UserDashboard /> }],
   },
 ]);

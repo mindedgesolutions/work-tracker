@@ -32,3 +32,37 @@ export const login = async (req, res) => {
   });
   res.status(StatusCodes.OK).json({ data: user?.rows[0]?.role_id });
 };
+
+// ------
+
+export const logout = async (req, res) => {
+  res.cookie("token", "logout", {
+    httpOnly: true,
+    expires: new Date(Date.now()),
+  });
+
+  res.status(StatusCodes.OK).json({ msg: "User logged out" });
+};
+
+// ------
+
+export const loggedInUserInfo = async (req, res) => {
+  const { uuid } = req.user;
+  const data = await pool.query(
+    `select um.*, roles.name as rname,
+    json_agg(
+      json_build_object(
+        'id', pr.id,
+        'name', pr.name
+      )
+    ) as permissions
+    from users um
+    left join roles on roles.id = um.role_id
+    left join map_user_permission mup on mup.user_id = um.id
+    left join permissions pr on pr.id = mup.permission_id
+    where um.uuid=$1 group by um.id, roles.id`,
+    [uuid]
+  );
+
+  res.status(StatusCodes.OK).json({ data });
+};

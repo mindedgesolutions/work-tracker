@@ -14,6 +14,7 @@ const generateCaptcha = () => {
 
 const initialState = {
   captcha: "",
+  loggedInUser: "",
 };
 
 const authSlice = createSlice({
@@ -23,8 +24,15 @@ const authSlice = createSlice({
     setCaptcha: (state) => {
       state.captcha = generateCaptcha();
     },
+    setLoggedInUser: (state, action) => {
+      state.loggedInUser = action.payload;
+    },
+    unsetLoggedInUser: (state) => {
+      state.loggedInUser = "";
+    },
   },
 });
 
-export const { setCaptcha } = authSlice.actions;
+export const { setCaptcha, setLoggedInUser, unsetLoggedInUser } =
+  authSlice.actions;
 export default authSlice.reducer;
