@@ -1,7 +1,7 @@
 import React from "react";
 
 const TaskAdmin = () => {
-  return <div>TaskAdmin</div>;
+  return <></>;
 };
 
 export default TaskAdmin;

@@ -1,6 +1,7 @@
 export { default as AdminLayout } from "./layouts/AdminLayout";
 export { default as LeadLayout } from "./layouts/LeadLayout";
 export { default as UserLayout } from "./layouts/UserLayout";
+export { default as CommonLayout } from "./layouts/CommonLayout";
 export { default as Login } from "./auth/Login";
 export { default as ForgotPassword } from "./auth/ForgotPassword";
 export { default as Profile } from "./profile/Profile";
@@ -17,3 +18,6 @@ export { default as UserPermission } from "./rolesPermissions/UserPermission";
 export { default as TaskAdmin } from "./tasks/TaskAdmin";
 export { default as TaskLead } from "./tasks/TaskLead";
 export { default as TaskUser } from "./tasks/TaskUser";
+export { default as AddEditTask } from "./tasks/AddEditTask";
+export { default as ViewTask } from "./tasks/ViewTask";
+export { default as TaskUpdates } from "./tasks/TaskUpdates";
