@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   taskId: "",
-  taskAssigns: [],
+  taskAssignees: [],
   editId: "",
 };
 
@@ -16,11 +16,37 @@ const taskSlice = createSlice({
     unsetTaskId: (state) => {
       state.taskId = "";
     },
-    setTaskAssigns: (state, action) => {
-      state.taskAssigns = action.payload;
+    setTaskAssignees: (state, action) => {
+      let newArr = [...state.taskAssignees, action.payload];
+      newArr = newArr.sort((a, b) => a.userName - b.userName);
+      state.taskAssignees = newArr;
+    },
+    removeTaskAssignee: (state, action) => {
+      const newArr = state.taskAssignees.filter(
+        (i) => i.userId !== action.payload
+      );
+      state.taskAssignees = newArr;
+    },
+    editTaskAssignee: (state, action) => {
+      state.editId = action.payload;
+    },
+    unsetEditId: (state) => {
+      state.editId = "";
+    },
+    saveChanges: (state, action) => {
+      state.taskAssignees.filter((i) => i.userId !== action.payload.userId);
+      state.taskAssignees = [...state.taskAssignees, action.payload];
     },
   },
 });
 
-export const { setTaskId, unsetTaskId, setTaskAssigns } = taskSlice.actions;
+export const {
+  setTaskId,
+  unsetTaskId,
+  setTaskAssignees,
+  removeTaskAssignee,
+  editTaskAssignee,
+  unsetEditId,
+  saveChanges,
+} = taskSlice.actions;
 export default taskSlice.reducer;

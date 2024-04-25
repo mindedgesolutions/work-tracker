@@ -8,20 +8,27 @@ import AsyncSelect from "react-select/async";
 import { useDispatch, useSelector } from "react-redux";
 import { timeUnits } from "../../../utils/data";
 import { setUserNameIds } from "../../features/common/commonSlice";
+import {
+  editTaskAssignee,
+  removeTaskAssignee,
+  saveChanges,
+  setTaskAssignees,
+  unsetEditId,
+} from "../../features/task/taskSlice";
 
-const AddEditAssigns = ({ props }) => {
+const AddEditAssignee = ({ props }) => {
   const dispatch = useDispatch();
   const [assigns, setAssigns] = useState({
     userId: "",
     userName: "",
     priority: "",
     time: "",
-    timeUnit: "",
+    timeUnit: "day",
     taskDesc: "",
   });
 
   const { priorities, userNameIds } = useSelector((store) => store.common);
-  const { taskAssigns, editId } = useSelector((store) => store.tasks);
+  const { taskAssignees, editId } = useSelector((store) => store.tasks);
 
   const numbers = Array.from({ length: 7 }, (_, index) => index + 1);
 
@@ -41,7 +48,7 @@ const AddEditAssigns = ({ props }) => {
         option.label.toLowerCase().includes(searchValue.toLowerCase())
       );
       callback(filteredOptions);
-    }, 2000);
+    }, 300);
   };
 
   const handleUserChange = (selectedOption) => {
@@ -51,6 +58,8 @@ const AddEditAssigns = ({ props }) => {
       userName: selectedOption.label,
     });
   };
+
+  const user = taskAssignees?.find((i) => i.userId === editId);
 
   useEffect(() => {
     const getUsers = async () => {
@@ -68,13 +77,16 @@ const AddEditAssigns = ({ props }) => {
 
     setAssigns({
       ...assigns,
-      priority: props.upriority,
-      time: props.utime,
-      timeUnit: props.utimeUnit,
+      userId: editId ? user?.userId : "",
+      userName: editId ? user?.userName : "",
+      priority: editId ? user?.priority : props.upriority,
+      time: editId ? user?.time : props.utime,
+      timeUnit: editId ? user?.timeUnit : props.utimeUnit || "day",
     });
-  }, [props]);
+  }, [props, editId]);
 
   const resetContactForm = () => {
+    dispatch(unsetEditId());
     setAssigns({
       ...assigns,
       userId: "",
@@ -89,11 +101,18 @@ const AddEditAssigns = ({ props }) => {
   const handleAddContact = async () => {
     try {
       await customFetch.post(`/tasks/validate-assignee`, assigns);
+      if (!editId) {
+        dispatch(setTaskAssignees(assigns));
+      } else {
+        dispatch(saveChanges(assigns));
+      }
+      setAssigns({ ...assigns, userId: "", userName: "", taskDesc: "" });
     } catch (error) {
       splitErrors(error?.response?.data?.msg);
       return error;
     }
   };
+  // console.log(taskAssignees);
 
   return (
     <>
@@ -203,31 +222,38 @@ const AddEditAssigns = ({ props }) => {
             </tr>
           </thead>
           <tbody>
-            {taskAssigns.length === 0 ? (
+            {taskAssignees?.length === 0 ? (
               <tr>
                 <td colSpan={6} className="text-center">
                   NO DATA FOUND
                 </td>
               </tr>
             ) : (
-              taskAssigns?.map((i, index) => {
+              taskAssignees?.map((i, index) => {
+                const prio = priorities.find(
+                  (p) => p.id === Number(i.priority)
+                );
                 return (
                   <tr key={nanoid()}>
-                    <td>{i.name?.toUpperCase()}</td>
-                    <td>{i.email}</td>
-                    <td>{i.mobile}</td>
+                    <td>{index + 1}.</td>
+                    <td>{i.userName?.toUpperCase()}</td>
+                    <td>{prio?.name?.toUpperCase()}</td>
+                    <td>
+                      {i.time} {i.timeUnit}/s
+                    </td>
+                    <td>{i.taskDesc || `NA`}</td>
                     <td className="text-nowrap">
                       <button
                         type="button"
                         className="btn btn-sm btn-info me-2"
-                        // onClick={() => dispatch(enableEdit(i.id))}
+                        onClick={() => dispatch(editTaskAssignee(i.userId))}
                       >
                         <MdModeEdit size={16} />
                       </button>
                       <button
                         type="button"
                         className="btn btn-sm btn-danger"
-                        // onClick={() => dispatch(removeContact(i.id))}
+                        onClick={() => dispatch(removeTaskAssignee(i.userId))}
                       >
                         <LuTrash2 size={16} />
                       </button>
@@ -243,4 +269,4 @@ const AddEditAssigns = ({ props }) => {
   );
 };
 
-export default AddEditAssigns;
+export default AddEditAssignee;

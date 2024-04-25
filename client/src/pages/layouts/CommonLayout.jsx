@@ -1,6 +1,6 @@
 import React from "react";
 import { Footer, SideBar, TopNav } from "../../components";
-import { Outlet, useNavigate } from "react-router-dom";
+import { Outlet, redirect, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import {
   setLoggedInUser,

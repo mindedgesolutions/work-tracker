@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { AddEditAssigns, PageHeader, PageWrapper } from "../../components";
+import { AddEditAssignee, PageHeader, PageWrapper } from "../../components";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { timeUnits } from "../../../utils/data";
@@ -191,7 +191,7 @@ const AddEditTask = () => {
                 </div>
               </div>
               <hr />
-              <AddEditAssigns props={props} />
+              <AddEditAssignee props={props} />
               <hr />
               <div className="row row-cards">
                 <div className="col"></div>
