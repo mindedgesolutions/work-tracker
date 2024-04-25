@@ -20,3 +20,8 @@ export const projectDepartments = [
     text: `West Bengal Labour Commission`,
   },
 ];
+
+export const timeUnits = [
+  { id: nanoid(), value: "day", text: "Day/s" },
+  { id: nanoid(), value: "hr", text: "Hour/s" },
+];

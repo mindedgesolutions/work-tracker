@@ -6,6 +6,7 @@ import { store } from "./store";
 import { loader as AdminLayoutLoader } from "./pages/layouts/AdminLayout";
 import { loader as LeadLayoutLoader } from "./pages/layouts/LeadLayout";
 import { loader as UserLayoutLoader } from "./pages/layouts/UserLayout";
+import { loader as CommonLayoutLoader } from "./pages/layouts/CommonLayout";
 
 // Action starts ------
 import { action as LoginAction } from "./pages/auth/Login";
@@ -49,6 +50,17 @@ const router = createBrowserRouter([
     children: [
       { path: "dashboard", element: <Wt.UserDashboard /> },
       { path: "tasks", element: <Wt.TaskUser /> },
+    ],
+  },
+  {
+    path: "/",
+    element: <Wt.CommonLayout />,
+    loader: CommonLayoutLoader(store),
+    children: [
+      {
+        path: "task/:id?",
+        element: <Wt.AddEditTask />,
+      },
     ],
   },
 ]);

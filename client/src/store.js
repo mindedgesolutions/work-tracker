@@ -5,6 +5,7 @@ import projectReducer from "./features/masters/projectSlice";
 import permissionReducer from "./features/masters/permissionSlice";
 import userReducer from "./features/users/userSlice";
 import authReducer from "./features/auth/authSlice";
+import taskReducer from "./features/task/taskSlice";
 
 export const store = configureStore({
   reducer: {
@@ -14,5 +15,6 @@ export const store = configureStore({
     permissions: permissionReducer,
     users: userReducer,
     auth: authReducer,
+    tasks: taskReducer,
   },
 });

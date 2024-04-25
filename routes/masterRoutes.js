@@ -37,6 +37,7 @@ import {
   getMenuWithPagination,
   updateMenu,
 } from "../controller/masters/menuController.js";
+import { getAllPriority } from "../controller/masters/priorityController.js";
 
 router.get(`/all-roles`, getAllRoles);
 router
@@ -74,5 +75,7 @@ router
   .get(getMenuWithPagination)
   .post(validateMenu, addNewMenu);
 router.patch(`/menus/:id`, updateMenu);
+
+router.get(`/priorities`, getAllPriority);
 
 export default router;

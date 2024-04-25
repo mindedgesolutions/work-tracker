@@ -1,7 +1,12 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const TaskAdmin = () => {
-  return <></>;
+  return (
+    <>
+      <Link to="/task">Task</Link>
+    </>
+  );
 };
 
 export default TaskAdmin;

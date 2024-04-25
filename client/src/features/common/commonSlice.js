@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   changeCount: 0,
+  priorities: [],
 };
 
 const commonSlice = createSlice({
@@ -11,8 +12,15 @@ const commonSlice = createSlice({
     updateChangeCount: (state) => {
       state.changeCount += 1;
     },
+    setPriorities: (state, action) => {
+      state.priorities = action.payload;
+    },
+    unsetPriorities: (state) => {
+      state.priorities = [];
+    },
   },
 });
 
-export const { updateChangeCount } = commonSlice.actions;
+export const { updateChangeCount, setPriorities, unsetPriorities } =
+  commonSlice.actions;
 export default commonSlice.reducer;
