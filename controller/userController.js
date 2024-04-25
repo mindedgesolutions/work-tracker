@@ -87,3 +87,9 @@ export const getUserWithPagination = async (req, res) => {
 };
 
 // ------
+
+export const getAllUserId = async (req, res) => {
+  const data = await pool.query(`select id, name from users order by name`, []);
+
+  res.status(StatusCodes.OK).json({ data });
+};
