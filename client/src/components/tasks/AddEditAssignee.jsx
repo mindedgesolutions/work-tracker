@@ -48,7 +48,7 @@ const AddEditAssignee = ({ props }) => {
         option.label.toLowerCase().includes(searchValue.toLowerCase())
       );
       callback(filteredOptions);
-    }, 300);
+    }, 2000);
   };
 
   const handleUserChange = (selectedOption) => {
@@ -83,7 +83,7 @@ const AddEditAssignee = ({ props }) => {
       time: editId ? user?.time : props.utime,
       timeUnit: editId ? user?.timeUnit : props.utimeUnit || "day",
     });
-  }, [props, editId]);
+  }, [props]);
 
   const resetContactForm = () => {
     dispatch(unsetEditId());
@@ -105,6 +105,7 @@ const AddEditAssignee = ({ props }) => {
         dispatch(setTaskAssignees(assigns));
       } else {
         dispatch(saveChanges(assigns));
+        dispatch(unsetEditId());
       }
       setAssigns({ ...assigns, userId: "", userName: "", taskDesc: "" });
     } catch (error) {
@@ -112,7 +113,6 @@ const AddEditAssignee = ({ props }) => {
       return error;
     }
   };
-  // console.log(taskAssignees);
 
   return (
     <>

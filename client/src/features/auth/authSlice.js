@@ -15,6 +15,7 @@ const generateCaptcha = () => {
 const initialState = {
   captcha: "",
   loggedInUser: "",
+  returnPath: "",
 };
 
 const authSlice = createSlice({
@@ -26,9 +27,21 @@ const authSlice = createSlice({
     },
     setLoggedInUser: (state, action) => {
       state.loggedInUser = action.payload;
+      switch (action.payload.role_id) {
+        case 1 || 2:
+          state.returnPath = "/admin";
+          break;
+        case 3 || 4:
+          state.returnPath = "/lead";
+          break;
+        default:
+          state.returnPath = "/user";
+          break;
+      }
     },
     unsetLoggedInUser: (state) => {
       state.loggedInUser = "";
+      state.returnPath = "";
     },
   },
 });

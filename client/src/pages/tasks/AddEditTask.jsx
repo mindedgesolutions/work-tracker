@@ -1,12 +1,14 @@
 import React, { useState } from "react";
 import { AddEditAssignee, PageHeader, PageWrapper } from "../../components";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { timeUnits } from "../../../utils/data";
 import { nanoid } from "nanoid";
 import SubmitBtn from "../../components/SubmitBtn";
 import { splitErrors } from "../../../utils/showErrors";
 import customFetch from "../../../utils/customFetch";
+import { toast } from "react-toastify";
+import { unsetTaskAssigneee } from "../../features/task/taskSlice";
 
 const AddEditTask = () => {
   const navigate = useNavigate();
@@ -26,9 +28,12 @@ const AddEditTask = () => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const { taskId, taskAssigns } = useSelector((store) => store.tasks);
+  const { taskId, taskAssignees } = useSelector((store) => store.tasks);
   const { priorities } = useSelector((store) => store.common);
   const { projects } = useSelector((store) => store.projects);
+  const { returnPath } = useSelector((store) => store.auth);
+
+  const returnUrl = <Link to={`${returnPath}/tasks`}>Back to Task List</Link>;
 
   const pageHeader = taskId ? `Update details` : `Add new task`;
   document.title = taskId
@@ -42,10 +47,13 @@ const AddEditTask = () => {
     setIsLoading(true);
     const formData = new FormData(e.currentTarget);
     let data = Object.fromEntries(formData);
-    data = { ...data, assigns: taskAssigns };
+    data = { ...data, assigns: taskAssignees };
     try {
       const response = await customFetch.post(`/tasks/tasks`, data);
 
+      dispatch(unsetTaskAssigneee());
+
+      toast.success(`Task added`);
       setIsLoading(false);
     } catch (error) {
       setIsLoading(false);
@@ -60,12 +68,25 @@ const AddEditTask = () => {
     utimeUnit: form.timeUnit,
   };
 
+  const resetForm = () => {
+    dispatch(unsetTaskAssigneee());
+    setForm({
+      ...form,
+      projectId: "",
+      priority: "",
+      allottedTime: "",
+      timeUnit: "",
+      taskDescShort: "",
+      taskDescLong: "",
+    });
+  };
+
   return (
     <>
       <div className="page-header d-print-none">
         <div className="container-xl">
           <div className="row g-2 align-items-center">
-            <PageHeader title={pageHeader} />
+            <PageHeader title={pageHeader} breadCrumb={returnUrl} />
           </div>
         </div>
       </div>
@@ -200,7 +221,11 @@ const AddEditTask = () => {
                     text={taskId ? `Update details` : `Add task`}
                     isLoading={isLoading}
                   />
-                  <button className="btn btn-md btn-default ms-3">
+                  <button
+                    type="button"
+                    className="btn btn-md btn-default ms-3"
+                    onClick={resetForm}
+                  >
                     Reset form
                   </button>
                 </div>

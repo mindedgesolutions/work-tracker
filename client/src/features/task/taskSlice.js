@@ -34,8 +34,27 @@ const taskSlice = createSlice({
       state.editId = "";
     },
     saveChanges: (state, action) => {
-      state.taskAssignees.filter((i) => i.userId !== action.payload.userId);
-      state.taskAssignees = [...state.taskAssignees, action.payload];
+      const { userId, userName, priority, time, timeUnit, taskDesc } =
+        action.payload;
+      let user = state.taskAssignees.find(
+        (i) => i.userId === action.payload.userId
+      );
+      const newMember = {
+        ...user,
+        userId: userId,
+        userName: userName,
+        priority: priority,
+        time: time,
+        timeUnit: timeUnit,
+        taskDesc: taskDesc,
+      };
+      state.taskAssignees = state.taskAssignees.filter(
+        (i) => i.userId !== userId
+      );
+      state.taskAssignees = [...state.taskAssignees, newMember];
+    },
+    unsetTaskAssigneee: (state) => {
+      state.taskAssignees = [];
     },
   },
 });
@@ -48,5 +67,6 @@ export const {
   editTaskAssignee,
   unsetEditId,
   saveChanges,
+  unsetTaskAssigneee,
 } = taskSlice.actions;
 export default taskSlice.reducer;

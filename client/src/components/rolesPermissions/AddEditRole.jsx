@@ -25,6 +25,7 @@ const AddEditRole = () => {
     const data = Object.fromEntries(formData);
     const process = roleId ? customFetch.patch : customFetch.post;
     const apiUrl = roleId ? `/masters/roles/${roleId}` : `/masters/roles`;
+    const msg = roleId ? `Details updated` : `Role added`;
     try {
       const response = await process(apiUrl, data);
       const dbRoles = await customFetch.get(`/masters/all-roles`);

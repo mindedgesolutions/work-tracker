@@ -43,6 +43,11 @@ export const formatStartDate = (date) => {
   return filterStart;
 };
 
+export const getUserId = async (uuid) => {
+  const data = await pool.query(`select id from users where uuid=$1`, [uuid]);
+  return data.rows[0].id;
+};
+
 // JWT token starts ------
 export const createJWT = (uuid, remember) => {
   const payload = { uuid: uuid };
