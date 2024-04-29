@@ -18,7 +18,7 @@ import { FaRegTrashCan } from "react-icons/fa6";
 import { useDispatch } from "react-redux";
 
 const TaskAdmin = () => {
-  document.title = `List of Tasks | ${import.meta.env.APP_COMMON_TITLE}`;
+  document.title = `List of Tasks | ${import.meta.env.VITE_COMMON_TITLE}`;
   const returnUrl = `/admin/tasks`;
 
   const navigate = useNavigate();
@@ -39,6 +39,20 @@ const TaskAdmin = () => {
         <div className="container-xl">
           <div className="row g-2 align-items-center">
             <PageHeader title={`List of Tasks`} />
+            <div className="col-auto ms-auto d-print-none">
+              <div className="btn-list">
+                <span className="d-none d-sm-inline">
+                  <Link to="/task">
+                    <button
+                      type="button"
+                      className="btn btn-success d-none d-sm-inline-block me-2"
+                    >
+                      Add new
+                    </button>
+                  </Link>
+                </span>
+              </div>
+            </div>
           </div>
         </div>
       </div>

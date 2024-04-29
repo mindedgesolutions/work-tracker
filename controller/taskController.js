@@ -1,7 +1,7 @@
 import { StatusCodes } from "http-status-codes";
 import pool from "../db.js";
 import { BadRequestError } from "../errors/customErrors.js";
-import { currentDate, getUserId } from "../utils/functions.js";
+import { currentDate, generateTaskId, getUserId } from "../utils/functions.js";
 import { v4 as uuidv4 } from "uuid";
 
 export const addNewTask = async (req, res) => {
@@ -48,6 +48,8 @@ export const addNewTask = async (req, res) => {
 
     const taskId = data.rows[0].id;
 
+    const task = await generateTaskId(Number(projectId), taskId);
+
     for (const assignee of assigns) {
       const tdesc = assignee.taskDesc ? assignee.taskDesc.trim() : null;
       const details = await pool.query(
@@ -64,6 +66,11 @@ export const addNewTask = async (req, res) => {
         ]
       );
     }
+
+    await pool.query(`update task_master set task_id=$1 where id=$2`, [
+      task,
+      taskId,
+    ]);
 
     await pool.query(`COMMIT`);
 

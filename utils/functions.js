@@ -3,6 +3,7 @@ import pool from "../db.js";
 import slug from "slug";
 import jwt from "jsonwebtoken";
 import date from "date-and-time";
+import { checkIfNum } from "./formatValidation.js";
 
 export const createUsername = async (name) => {
   let username = slug(name);
@@ -46,6 +47,42 @@ export const formatStartDate = (date) => {
 export const getUserId = async (uuid) => {
   const data = await pool.query(`select id from users where uuid=$1`, [uuid]);
   return data.rows[0].id;
+};
+
+export const generateTaskId = async (projectId, id) => {
+  let concat;
+  switch (id.toString().length) {
+    case 1:
+      concat = `0000` + id;
+      break;
+    case 2:
+      concat = `000` + id;
+      break;
+    case 3:
+      concat = `00` + id;
+      break;
+    case 4:
+      concat = `0` + id;
+      break;
+    default:
+      concat = id;
+      break;
+  }
+  const prName = await pool.query(`select name from projects where id=$1`, [
+    projectId,
+  ]);
+  const wordArr = prName.rows[0].name.split(" ");
+
+  let prefix = "";
+
+  for (let i = 0; i < wordArr.length; i++) {
+    const checkNum = checkIfNum(wordArr[i]);
+    prefix += checkNum ? wordArr[i] : wordArr[i][0].toUpperCase();
+  }
+
+  const taskId = `NICSI/` + prefix + `/` + concat;
+  console.log(taskId);
+  return taskId;
 };
 
 // JWT token starts ------

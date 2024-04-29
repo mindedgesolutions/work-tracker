@@ -22,3 +22,8 @@ export const isValidPassport = (value) => {
   const regex = /^[A-Z]{1}[0-9]{7}$/;
   return regex.test(value);
 };
+
+export const checkIfNum = (value) => {
+  const regex = /^-?\d*\.?\d+$/;
+  return regex.test(value);
+};

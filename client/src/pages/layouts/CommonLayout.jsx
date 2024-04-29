@@ -10,15 +10,22 @@ import { toast } from "react-toastify";
 import customFetch from "../../../utils/customFetch";
 import { splitErrors } from "../../../utils/showErrors";
 import { setPriorities } from "../../features/common/commonSlice";
+import { setProjects } from "../../features/masters/projectSlice";
 
 // Loader starts ------
 export const loader = (store) => async () => {
   const { loggedInUser } = store.getState().auth;
   const { priorities } = store.getState().common;
+  const { projects } = store.getState().projects;
+
   try {
     if (!loggedInUser.id) {
       const user = await customFetch.get(`/auth/user`);
       store.dispatch(setLoggedInUser(user.data.data.rows[0]));
+    }
+    if (projects.length === 0) {
+      const dbProject = await customFetch.get(`/masters/all-projects`);
+      store.dispatch(setProjects(dbProject.data.data.rows));
     }
     if (priorities.length === 0) {
       const priority = await customFetch.get(`/masters/priorities`);
