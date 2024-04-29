@@ -56,7 +56,7 @@ export const deleteUser = async (req, res) => {
 export const getUserWithPagination = async (req, res) => {
   const { name, page } = req.query;
   const pagination = paginationLogic(page, null);
-  let search = name ? `where um.name ilike '%${name}%'` : ``;
+  let search = name ? `where um.name ilike '%${name.trim()}%'` : ``;
 
   const data = await pool.query(
     `select um.*,

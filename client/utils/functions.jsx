@@ -68,3 +68,22 @@ export const roleBadge = (value) => {
   }
   return badge;
 };
+
+export const priorityBadge = (value) => {
+  let badge;
+  switch (value) {
+    case 1:
+      badge = "success";
+      break;
+    case 2:
+      badge = "warning";
+      break;
+    case 3:
+      badge = "primary";
+      break;
+    default:
+      badge = "success";
+      break;
+  }
+  return badge;
+};

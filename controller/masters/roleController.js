@@ -60,7 +60,7 @@ export const getAllRoles = async (req, res) => {
 export const getRoleWithPagination = async (req, res) => {
   const { name, page } = req.query;
   const pagination = paginationLogic(page, null);
-  let search = name ? `where roles.name ilike '%${name}%'` : ``;
+  let search = name ? `where roles.name ilike '%${name.trim()}%'` : ``;
 
   const data = await pool.query(
     `select roles.*,

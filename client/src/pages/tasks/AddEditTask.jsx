@@ -52,6 +52,7 @@ const AddEditTask = () => {
       const response = await customFetch.post(`/tasks/tasks`, data);
 
       dispatch(unsetTaskAssigneee());
+      resetForm();
 
       toast.success(`Task added`);
       setIsLoading(false);

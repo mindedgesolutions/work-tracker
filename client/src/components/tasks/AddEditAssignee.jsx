@@ -48,7 +48,7 @@ const AddEditAssignee = ({ props }) => {
         option.label.toLowerCase().includes(searchValue.toLowerCase())
       );
       callback(filteredOptions);
-    }, 2000);
+    }, 1000);
   };
 
   const handleUserChange = (selectedOption) => {
@@ -82,6 +82,7 @@ const AddEditAssignee = ({ props }) => {
       priority: editId ? user?.priority : props.upriority,
       time: editId ? user?.time : props.utime,
       timeUnit: editId ? user?.timeUnit : props.utimeUnit || "day",
+      taskDesc: editId ? user?.taskDesc : props.taskDesc || "",
     });
   }, [props]);
 

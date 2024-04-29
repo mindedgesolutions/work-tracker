@@ -4,6 +4,7 @@ const initialState = {
   taskId: "",
   taskAssignees: [],
   editId: "",
+  listTask: [],
 };
 
 const taskSlice = createSlice({
@@ -56,6 +57,9 @@ const taskSlice = createSlice({
     unsetTaskAssigneee: (state) => {
       state.taskAssignees = [];
     },
+    setListTask: (state, action) => {
+      state.listTask = action.payload;
+    },
   },
 });
 
@@ -68,5 +72,6 @@ export const {
   unsetEditId,
   saveChanges,
   unsetTaskAssigneee,
+  setListTask,
 } = taskSlice.actions;
 export default taskSlice.reducer;

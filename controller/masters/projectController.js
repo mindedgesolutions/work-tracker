@@ -122,7 +122,7 @@ export const getAllProjects = async (req, res) => {
 export const getProjectWithPagination = async (req, res) => {
   const { name, page } = req.query;
   const pagination = paginationLogic(page, null);
-  let search = name ? `where pr.name ilike '%${name}%'` : ``;
+  let search = name ? `where pr.name ilike '%${name.trim()}%'` : ``;
 
   const data = await pool.query(
     `select pr.*,

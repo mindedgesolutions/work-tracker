@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Form, Link, useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Form, Link, useLocation, useNavigate } from "react-router-dom";
 import {
   FilterTask,
   PageHeader,
@@ -7,15 +7,17 @@ import {
   PaginationContainer,
   TableLoader,
   TaskDeleteModal,
-  UserDeleteModal,
 } from "../../components";
 import { IoIosSearch } from "react-icons/io";
 import { IoFolderOpen, IoReloadSharp } from "react-icons/io5";
 import { nanoid } from "nanoid";
-import { serialNo } from "../../../utils/functions";
+import { priorityBadge, serialNo } from "../../../utils/functions";
 import { MdOutlineModeEdit, MdOutlinePowerSettingsNew } from "react-icons/md";
 import { FaRegTrashCan } from "react-icons/fa6";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { splitErrors } from "../../../utils/showErrors";
+import customFetch from "../../../utils/customFetch";
+import { setListTask } from "../../features/task/taskSlice";
 
 const TaskAdmin = () => {
   document.title = `List of Tasks | ${import.meta.env.VITE_COMMON_TITLE}`;
@@ -23,15 +25,47 @@ const TaskAdmin = () => {
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { search } = useLocation();
+  const queryParams = new URLSearchParams(search);
+
+  const { listTask } = useSelector((store) => store.tasks);
+
   const [searchInput, setSearchInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [metaData, setMetaData] = useState([]);
 
-  const users = [];
-  const totalRecords = 12;
-  const pageCount = 0;
-  const currentPage = 0;
+  const fetchData = async () => {
+    setIsLoading(true);
+    try {
+      const response = await customFetch.get(`/tasks/admin`, {
+        params: {
+          name: queryParams.get("s") || "",
+          page: queryParams.get("page") || "",
+        },
+      });
 
-  const resetSearch = () => {};
+      dispatch(setListTask(response.data.data.rows));
+      setMetaData(response.data.meta);
+      setIsLoading(false);
+    } catch (error) {
+      setIsLoading(false);
+      splitErrors(error?.response?.data?.msg);
+      return error;
+    }
+  };
+
+  const pageCount = metaData?.totalPages;
+  const currentPage = metaData?.currentPage;
+  const totalRecords = metaData?.totalRecords;
+
+  const resetSearch = () => {
+    navigate(returnUrl);
+    setSearchInput("");
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, [queryParams.get("s"), queryParams.get("page")]);
 
   return (
     <>
@@ -57,7 +91,8 @@ const TaskAdmin = () => {
         </div>
       </div>
       <PageWrapper>
-        <div className="col-8">
+        <FilterTask />
+        <div className="col-12">
           <div className="card">
             <div className="card-header">
               Total {totalRecords} users found
@@ -102,56 +137,65 @@ const TaskAdmin = () => {
                   <thead>
                     <tr>
                       <th className="bg-dark text-white">Sl. No.</th>
-                      <th className="bg-dark text-white">Name</th>
-                      <th className="bg-dark text-white">Role</th>
-                      <th className="bg-dark text-white">Status</th>
+                      <th className="bg-dark text-white">Task ID</th>
+                      <th className="bg-dark text-white">Project</th>
+                      <th className="bg-dark text-white">Task</th>
+                      <th className="bg-dark text-white">Assignee/s</th>
+                      <th className="bg-dark text-white">Priority</th>
                       <th className="bg-dark text-white"></th>
                     </tr>
                   </thead>
                   <tbody>
                     {isLoading ? (
                       <tr>
-                        <td colSpan={5}>
+                        <td colSpan={7}>
                           <TableLoader />
                         </td>
                       </tr>
-                    ) : users.length === 0 ? (
+                    ) : listTask?.length === 0 ? (
                       <tr>
-                        <td colSpan={5} className="text-center">
+                        <td colSpan={7} className="text-center">
                           NO DATA FOUND
                         </td>
                       </tr>
                     ) : (
-                      users?.map((u, index) => {
+                      listTask?.map((u, index) => {
                         return (
                           <tr key={nanoid()}>
                             <td>
                               {serialNo(queryParams.get("page")) + index}.
                             </td>
-                            <td>{u.name.toUpperCase()}</td>
+                            <td>{u?.task_id?.toUpperCase()}</td>
                             <td>
-                              <span
-                                className={`badge bg-${roleBadge(
-                                  u.role
-                                )}-lt me-1 my-1 fs-6`}
-                              >
-                                {u.role.toUpperCase()}
-                              </span>
+                              {u?.prname?.length > 20
+                                ? u?.prname?.toUpperCase().slice(0, 20) + ` ...`
+                                : u?.prname?.toUpperCase()}
                             </td>
                             <td>
-                              {u.is_active ? (
-                                <span
-                                  className={`badge bg-success-lt me-1 my-1 fs-6`}
-                                >
-                                  {`ACTIVE`}
-                                </span>
-                              ) : (
-                                <span
-                                  className={`badge bg-danger-lt me-1 my-1 fs-6`}
-                                >
-                                  {`INACTIVE`}
-                                </span>
-                              )}
+                              {u?.short_desc?.length > 20
+                                ? u?.short_desc?.toUpperCase()?.slice(0, 20)
+                                : u?.short_desc?.toUpperCase()}
+                            </td>
+                            <td>
+                              {u?.details?.map((i) => {
+                                return (
+                                  <span
+                                    key={nanoid()}
+                                    className={`badge bg-success-lt me-1 my-1 fs-6`}
+                                  >
+                                    {i?.assign_name?.toUpperCase()}
+                                  </span>
+                                );
+                              })}
+                            </td>
+                            <td>
+                              <span
+                                className={`badge bg-${priorityBadge(
+                                  u?.priority
+                                )}-lt me-1 my-1 fs-6`}
+                              >
+                                {u?.priorityname?.toUpperCase()}
+                              </span>
                             </td>
                             <td className="text-nowrap">
                               <button
@@ -204,7 +248,7 @@ const TaskAdmin = () => {
             />
           </div>
         </div>
-        <FilterTask />
+        {/* <FilterTask /> */}
         <TaskDeleteModal />
       </PageWrapper>
     </>

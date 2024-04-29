@@ -58,7 +58,7 @@ export const getAllPermissions = async (req, res) => {
 export const getPermissionWithPagination = async (req, res) => {
   const { name, page } = req.query;
   const pagination = paginationLogic(page, null);
-  let search = name ? `where name ilike '%${name}%'` : ``;
+  let search = name ? `where name ilike '%${name.trim()}%'` : ``;
 
   const data = await pool.query(
     `select * from permissions ${search} group by id order by name offset $1 limit $2`,

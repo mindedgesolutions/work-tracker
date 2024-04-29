@@ -17,11 +17,13 @@ import {
 } from "../../features/auth/authSlice.js";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
+import { setPriorities } from "../../features/common/commonSlice.js";
 
 export const loader = (store) => async () => {
   const { roles } = store.getState().roles;
   const { projects } = store.getState().projects;
   const { permissions } = store.getState().permissions;
+  const { priorities } = store.getState().common;
   const { loggedInUser } = store.getState().auth;
   try {
     if (roles.length === 0) {
@@ -35,6 +37,10 @@ export const loader = (store) => async () => {
     if (permissions.length === 0) {
       const dbPermissions = await customFetch.get(`/masters/all-permissions`);
       store.dispatch(setPermissions(dbPermissions.data.data.rows));
+    }
+    if (priorities.length === 0) {
+      const dbPriorities = await customFetch.get(`/masters/priorities`);
+      store.dispatch(setPriorities(dbPriorities.data.data.rows));
     }
     if (!loggedInUser.id) {
       const user = await customFetch.get(`/auth/user`);

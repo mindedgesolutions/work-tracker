@@ -3,7 +3,9 @@ const router = Router();
 import {
   addNewTask,
   deleteTask,
-  getTaskWithPagination,
+  getTaskWithPaginationAdmin,
+  getTaskWithPaginationLead,
+  getTaskWithPaginationUser,
   taskAssignee,
   updateTask,
 } from "../controller/taskController.js";
@@ -12,10 +14,10 @@ import {
   validateTaskAssign,
 } from "../middleware/taskMiddleware.js";
 
-router
-  .route(`/tasks`)
-  .get(getTaskWithPagination)
-  .post(validateTask, addNewTask);
+router.post(`/tasks`, validateTask, addNewTask);
+router.get(`/admin`, getTaskWithPaginationAdmin);
+router.get(`/lead`, getTaskWithPaginationLead);
+router.get(`/user`, getTaskWithPaginationUser);
 router.route(`/tasks/:id`).patch(validateTask, updateTask).delete(deleteTask);
 router.post(`/validate-assignee`, validateTaskAssign, taskAssignee);
 
