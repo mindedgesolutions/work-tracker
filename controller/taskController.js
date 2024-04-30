@@ -97,7 +97,100 @@ export const taskAssignee = async (req, res) => {
 };
 
 // ------
-export const updateTask = async (req, res) => {};
+export const editTask = async (req, res) => {
+  const { id: uuid } = req.params;
+  const data = await pool.query(
+    `select tm.*,
+    json_agg(
+      json_build_object(
+        'assigned_to', td.assigned_to,
+        'assignee_name', um.name,
+        'priority', td.priority,
+        'time_allotted', td.time_allotted,
+        'time_unit', td.time_unit,
+        'task_desc', td.task_desc
+      )
+    ) as details
+    from task_master tm
+    left join task_details td on td.task_id = tm.id
+    left join users um on td.assigned_to = um.id
+    where tm.uuid=$1 group by tm.id`,
+    [uuid]
+  );
+
+  res.status(StatusCodes.OK).json({ data });
+};
+
+// ------
+export const updateTask = async (req, res) => {
+  const {
+    projectId,
+    priority,
+    allottedTime,
+    timeUnit,
+    taskDescShort,
+    taskDescLong,
+    assigns,
+  } = req.body;
+  const { uuid } = req.params;
+
+  if (assigns.length === 0) {
+    throw new BadRequestError(`Add at least one assignee`);
+  }
+
+  const long = taskDescLong ? taskDescLong.trim() : null;
+  const updatedAt = currentDate();
+
+  try {
+    await pool.query(`BEGIN`);
+
+    const taskId = await pool.query(
+      `select id from task_master where uuid=$1`,
+      [uuid]
+    );
+    const tid = taskId.rows[0].id;
+
+    const data = await pool.query(
+      `update task_master set short_desc=$1, long_desc=$2, project_id=$3, time_allotted=$4, time_unit=$5, priority=$6, updated_at=$7 where id=$8`,
+      [
+        taskDescShort.trim(),
+        long,
+        projectId,
+        allottedTime,
+        timeUnit,
+        priority,
+        updatedAt,
+        tid,
+      ]
+    );
+
+    await pool.query(`delete from task_details where task_id=$1`, [tid]);
+
+    for (const assignee of assigns) {
+      const tdesc = assignee.taskDesc ? assignee.taskDesc.trim() : null;
+      const details = await pool.query(
+        `insert into task_details(task_id, assigned_to, priority, time_allotted, time_unit, task_desc, created_at, updated_at) values($1, $2, $3, $4, $5, $6, $7, $8) returning id`,
+        [
+          Number(taskId),
+          Number(assignee.userId),
+          Number(assignee.priority),
+          Number(assignee.time),
+          assignee.timeUnit,
+          tdesc,
+          createdAt,
+          updatedAt,
+        ]
+      );
+    }
+
+    await pool.query(`COMMIT`);
+
+    res.status(StatusCodes.ACCEPTED).json({ data });
+  } catch (error) {
+    await pool.query(`ROLLBACK`);
+    return error;
+  }
+};
 
 // ------
 export const deleteTask = async (req, res) => {
@@ -171,7 +264,6 @@ export const getTaskWithPaginationAdmin = async (req, res) => {
     currentPage: pagination.pageNo,
     totalRecords: records.rowCount,
   };
-  console.log(meta);
 
   res.status(StatusCodes.OK).json({ data, meta });
 };

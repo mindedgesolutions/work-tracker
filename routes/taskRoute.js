@@ -4,6 +4,7 @@ import {
   activateTask,
   addNewTask,
   deleteTask,
+  editTask,
   getTaskWithPaginationAdmin,
   getTaskWithPaginationLead,
   getTaskWithPaginationUser,
@@ -19,7 +20,8 @@ router.post(`/tasks`, validateTask, addNewTask);
 router.get(`/admin`, getTaskWithPaginationAdmin);
 router.get(`/lead`, getTaskWithPaginationLead);
 router.get(`/user`, getTaskWithPaginationUser);
-router.route(`/tasks/:id`).patch(validateTask, updateTask).delete(deleteTask);
+router.route(`/tasks/:id`).get(editTask).delete(deleteTask);
+router.patch(`/tasks/:uuid`, validateTask, updateTask);
 router.post(`/validate-assignee`, validateTaskAssign, taskAssignee);
 router.post(`/activate-task/:id`, activateTask);
 

@@ -14,6 +14,7 @@ import {
   saveChanges,
   setTaskAssignees,
   unsetEditId,
+  unsetTaskAssigneee,
 } from "../../features/task/taskSlice";
 
 const AddEditAssignee = ({ props }) => {
@@ -98,6 +99,14 @@ const AddEditAssignee = ({ props }) => {
       taskDesc: "",
     });
   };
+
+  // const deleteUser = (id) => {
+  //   const newArr = taskAssignees.filter((i) => i.userId !== id);
+  //   dispatch(unsetTaskAssigneee());
+  //   newArr.map((i) => {
+  //     dispatch(setTaskAssignees(i));
+  //   });
+  // };
 
   const handleAddContact = async () => {
     try {
@@ -240,9 +249,15 @@ const AddEditAssignee = ({ props }) => {
                     <td>{i.userName?.toUpperCase()}</td>
                     <td>{prio?.name?.toUpperCase()}</td>
                     <td>
-                      {i.time} {i.timeUnit}/s
+                      {i.time} {i.timeUnit.toUpperCase()}/S
                     </td>
-                    <td>{i.taskDesc || `NA`}</td>
+                    <td>
+                      {i.taskDesc
+                        ? i.taskDesc.length > 20
+                          ? i.taskDesc.toUpperCase().substring(0, 20) + ` ...`
+                          : i.taskDesc.toUpperCase()
+                        : `NA`}
+                    </td>
                     <td className="text-nowrap">
                       <button
                         type="button"

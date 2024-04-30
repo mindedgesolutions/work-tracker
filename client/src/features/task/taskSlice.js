@@ -6,6 +6,7 @@ const initialState = {
   editId: "",
   listTask: [],
   showDelModal: false,
+  task: "",
 };
 
 const taskSlice = createSlice({
@@ -19,7 +20,9 @@ const taskSlice = createSlice({
       state.taskId = "";
     },
     setTaskAssignees: (state, action) => {
-      let newArr = [...state.taskAssignees, action.payload];
+      let newArr = Array.isArray(action.payload)
+        ? [...state.taskAssignees, ...action.payload]
+        : [...state.taskAssignees, action.payload];
       newArr = newArr.sort((a, b) => a.userName - b.userName);
       state.taskAssignees = newArr;
     },
@@ -69,6 +72,12 @@ const taskSlice = createSlice({
       state.showDelModal = false;
       state.taskId = "";
     },
+    setTask: (state, action) => {
+      state.task = action.payload;
+    },
+    unsetTask: (state) => {
+      state.task = "";
+    },
   },
 });
 
@@ -84,5 +93,7 @@ export const {
   setListTask,
   setShowDelModal,
   unsetShowDelModal,
+  setTask,
+  unsetTask,
 } = taskSlice.actions;
 export default taskSlice.reducer;
