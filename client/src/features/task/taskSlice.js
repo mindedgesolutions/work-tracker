@@ -5,6 +5,7 @@ const initialState = {
   taskAssignees: [],
   editId: "",
   listTask: [],
+  showDelModal: false,
 };
 
 const taskSlice = createSlice({
@@ -60,6 +61,14 @@ const taskSlice = createSlice({
     setListTask: (state, action) => {
       state.listTask = action.payload;
     },
+    setShowDelModal: (state, action) => {
+      state.showDelModal = true;
+      state.taskId = action.payload;
+    },
+    unsetShowDelModal: (state) => {
+      state.showDelModal = false;
+      state.taskId = "";
+    },
   },
 });
 
@@ -73,5 +82,7 @@ export const {
   saveChanges,
   unsetTaskAssigneee,
   setListTask,
+  setShowDelModal,
+  unsetShowDelModal,
 } = taskSlice.actions;
 export default taskSlice.reducer;

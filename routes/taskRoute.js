@@ -1,6 +1,7 @@
 import { Router } from "express";
 const router = Router();
 import {
+  activateTask,
   addNewTask,
   deleteTask,
   getTaskWithPaginationAdmin,
@@ -20,5 +21,6 @@ router.get(`/lead`, getTaskWithPaginationLead);
 router.get(`/user`, getTaskWithPaginationUser);
 router.route(`/tasks/:id`).patch(validateTask, updateTask).delete(deleteTask);
 router.post(`/validate-assignee`, validateTaskAssign, taskAssignee);
+router.post(`/activate-task/:id`, activateTask);
 
 export default router;

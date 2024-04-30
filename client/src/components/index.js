@@ -5,6 +5,7 @@ export { default as PageHeader } from "./PageHeader";
 export { default as PageWrapper } from "./PageWrapper";
 export { default as TableLoader } from "./TableLoader";
 export { default as PaginationContainer } from "./PaginationContainer";
+export { default as UserNameIdFilter } from "./UserNameIdFilter";
 export { default as AddEditUser } from "./users/AddEditUser";
 export { default as ViewUser } from "./users/ViewUser";
 export { default as UserDeleteModal } from "./users/UserDeleteModal";

@@ -100,15 +100,45 @@ export const taskAssignee = async (req, res) => {
 export const updateTask = async (req, res) => {};
 
 // ------
-export const deleteTask = async (req, res) => {};
+export const deleteTask = async (req, res) => {
+  const { id } = req.params;
+  const data = await pool.query(
+    `update task_master set is_active=false where id=$1`,
+    [id]
+  );
+
+  res.status(StatusCodes.NO_CONTENT).json({ data });
+};
+
+// ------
+export const activateTask = async (req, res) => {
+  const { id } = req.params;
+  const data = await pool.query(
+    `update task_master set is_active=true where id=$1`,
+    [id]
+  );
+
+  res.status(StatusCodes.ACCEPTED).json({ data });
+};
 
 // ------
 export const getTaskWithPaginationAdmin = async (req, res) => {
-  const { name, page } = req.query;
+  const { page, projectId, priority, taskId, userId } = req.query;
   const pagination = paginationLogic(page, null);
-  let search = name
-    ? `where tm.short_desc ilike '%${name.trim()}%' or tm.task_id ilike '%${name.trim()}%'`
-    : ``;
+
+  let filter = "";
+  if (projectId) {
+    filter += ` and tm.project_id=${projectId}`;
+  }
+  if (priority) {
+    filter += ` and tm.priority=${priority}`;
+  }
+  if (taskId) {
+    filter += ` and tm.task_id ilike '%${taskId.trim()}%'`;
+  }
+  if (userId) {
+    filter += ` and td.assigned_to=${userId}`;
+  }
 
   const data = await pool.query(
     `select tm.*,
@@ -119,17 +149,20 @@ export const getTaskWithPaginationAdmin = async (req, res) => {
     ) as details,
     pr.name as prname,
     prm.name as priorityname
-    from task_master as tm
+    from task_master tm
     left join task_details td on td.task_id = tm.id
     left join users um on td.assigned_to = um.id
     left join projects pr on pr.id = tm.project_id
     left join priority_master prm on prm.id = tm.priority
-    ${search} group by tm.id, pr.name, prm.name offset $1 limit $2`,
+    where tm.id is not null
+    ${filter} group by tm.id, pr.name, prm.name offset $1 limit $2`,
     [pagination.offset, pagination.pageLimit]
   );
 
   const records = await pool.query(
-    `select * from task_master tm ${search}`,
+    `select tm.* from task_master tm
+    left join task_details td on td.task_id = tm.id
+    where tm.id is not null ${filter} group by tm.id`,
     []
   );
   const totalPages = Math.ceil(records.rowCount / pagination.pageLimit);
@@ -138,6 +171,7 @@ export const getTaskWithPaginationAdmin = async (req, res) => {
     currentPage: pagination.pageNo,
     totalRecords: records.rowCount,
   };
+  console.log(meta);
 
   res.status(StatusCodes.OK).json({ data, meta });
 };

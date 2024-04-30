@@ -40,7 +40,7 @@ const UserDeleteModal = () => {
       </Modal.Header>
       <form method="post" onSubmit={handleSubmit}>
         <Modal.Body>
-          <p>Sure you wish to {user?.name}?</p>
+          <p>Sure you wish to delete {user?.name}?</p>
         </Modal.Body>
         <Modal.Footer>
           <button type="submit" className="btn btn-danger me-2">

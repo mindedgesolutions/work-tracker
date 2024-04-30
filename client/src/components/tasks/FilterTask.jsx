@@ -1,21 +1,23 @@
 import React, { useEffect, useState } from "react";
 import SubmitBtn from "../SubmitBtn";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { nanoid } from "nanoid";
-import { splitErrors } from "../../../utils/showErrors";
-import customFetch from "../../../utils/customFetch";
-import { setUserNameIds } from "../../features/common/commonSlice";
-import AsyncSelect from "react-select/async";
+import { Form, useLocation, useNavigate } from "react-router-dom";
+import UserNameIdFilter from "../UserNameIdFilter";
 
 const FilterTask = () => {
-  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { search } = useLocation();
+  const queryParams = new URLSearchParams(search);
+
+  const { returnPath } = useSelector((store) => store.auth);
+  const returnUrl = `${returnPath}/tasks`;
+
   const [isLoading, setIsLoading] = useState(false);
   const [form, setForm] = useState({
-    projectId: "",
-    priorityId: "",
-    taskId: "",
-    userId: "",
-    userName: "",
+    prj: "",
+    pr: "",
+    tid: "",
   });
 
   const handleChange = (e) => {
@@ -23,65 +25,40 @@ const FilterTask = () => {
   };
 
   const { projects } = useSelector((store) => store.projects);
-  const { priorities, userNameIds } = useSelector((store) => store.common);
+  const { priorities } = useSelector((store) => store.common);
 
-  const getUsers = async () => {
-    try {
-      if (userNameIds.length === 0) {
-        const response = await customFetch.get(`/user/user-id`);
-        dispatch(setUserNameIds(response.data.data.rows));
-      }
-    } catch (error) {
-      splitErrors(error?.response?.data?.msg);
-      return error;
-    }
-  };
-  let options = [];
-  userNameIds.map((user) => {
-    const userElement = { value: user.id, label: user.name };
-    options.push(userElement);
-  });
-
-  const loadOptions = (searchValue, callback) => {
-    setTimeout(() => {
-      const filteredOptions = options.filter((option) =>
-        option.label.toLowerCase().includes(searchValue.toLowerCase())
-      );
-      callback(filteredOptions);
-    }, 1000);
-  };
-
-  const handleUserChange = (selectedOption) => {
+  const handleReset = () => {
     setForm({
       ...form,
-      userId: selectedOption.value,
-      userName: selectedOption.label,
+      prj: "",
+      pr: "",
+      tid: "",
     });
+    navigate(returnUrl);
   };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-  };
-
-  const handleReset = () => {};
 
   useEffect(() => {
-    getUsers();
-  }, []);
+    setForm({
+      ...form,
+      prj: queryParams.get("prj") || "",
+      pr: queryParams.get("pr") || "",
+      tid: queryParams.get("tid") || "",
+    });
+  }, [queryParams.get("prj"), queryParams.get("pr"), queryParams.get("tid")]);
 
   return (
     <div className="col-12">
       <div className="card">
-        <form method="post" onSubmit={handleSubmit} autoComplete="off">
+        <Form method="get" autoComplete="off">
           <div className="card-body">
             <div className="row">
               <div className="col-md-3 col-sm-12">
                 <label className="form-label">Project</label>
                 <select
                   className="form-control"
-                  name="projectId"
-                  id="projectId"
-                  value={form.projectId}
+                  name="prj"
+                  id="prj"
+                  value={form.prj}
                   onChange={handleChange}
                 >
                   <option value="">- Select project -</option>
@@ -98,9 +75,9 @@ const FilterTask = () => {
                 <label className="form-label">Priorities</label>
                 <select
                   className="form-control"
-                  name="priorityId"
-                  id="priorityId"
-                  value={form.priorityId}
+                  name="pr"
+                  id="pr"
+                  value={form.pr}
                   onChange={handleChange}
                 >
                   <option value="">- Select priority -</option>
@@ -117,24 +94,16 @@ const FilterTask = () => {
                 <label className="form-label">Task ID</label>
                 <input
                   type="text"
-                  name="taskId"
-                  id="taskId"
-                  value={form.taskId}
+                  name="tid"
+                  id="tid"
+                  value={form.tid}
                   onChange={handleChange}
                   className="form-control"
                 />
               </div>
               <div className="col-md-3 col-sm-12">
                 <label className="form-label">Assignee</label>
-                <AsyncSelect
-                  loadOptions={loadOptions}
-                  onChange={handleUserChange}
-                  name="userId"
-                  value={{
-                    value: form.userId,
-                    label: form.userName,
-                  }}
-                />
+                <UserNameIdFilter />
               </div>
             </div>
           </div>
@@ -148,7 +117,7 @@ const FilterTask = () => {
               Reset filters
             </button>
           </div>
-        </form>
+        </Form>
       </div>
     </div>
   );
