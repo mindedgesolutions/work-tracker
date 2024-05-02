@@ -57,10 +57,8 @@ const router = createBrowserRouter([
     element: <Wt.CommonLayout />,
     loader: CommonLayoutLoader(store),
     children: [
-      {
-        path: "task/:id?",
-        element: <Wt.AddEditTask />,
-      },
+      { path: "task/:id?", element: <Wt.AddEditTask /> },
+      { path: "task/view/:id?", element: <Wt.ViewTask /> },
     ],
   },
 ]);

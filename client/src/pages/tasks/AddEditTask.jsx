@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { AddEditAssignee, PageHeader, PageWrapper } from "../../components";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { timeUnits } from "../../../utils/data";
 import { nanoid } from "nanoid";
@@ -16,6 +16,7 @@ import {
 
 const AddEditTask = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const params = useParams();
 
   const [form, setForm] = useState({
@@ -117,6 +118,8 @@ const AddEditTask = () => {
 
       toast.success(msg);
       setIsLoading(false);
+
+      form.editId && navigate(`${returnPath}/tasks`);
     } catch (error) {
       setIsLoading(false);
       splitErrors(error?.response?.data?.msg);
@@ -282,7 +285,7 @@ const AddEditTask = () => {
                 <div className="col-auto">
                   <SubmitBtn
                     text={form.editId ? `Update details` : `Add task`}
-                    isLoading={isLoading}
+                    // isLoading={isLoading}
                   />
                   <button
                     type="button"

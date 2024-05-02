@@ -199,22 +199,20 @@ const TaskAdmin = () => {
                               )}
                             </td>
                             <td className="text-nowrap">
-                              <button
-                                type="button"
-                                className="btn btn-primary btn-sm me-2"
-                                // onClick={() => handleView(u.uuid)}
-                              >
-                                <IoFolderOpen size={14} />
-                              </button>
+                              <Link to={`/task/view/${u.uuid}`}>
+                                <button
+                                  type="button"
+                                  className="btn btn-primary btn-sm me-2"
+                                >
+                                  <IoFolderOpen size={14} />
+                                </button>
+                              </Link>
                               {u.is_active ? (
                                 <>
                                   <Link to={`/task/${u.uuid}`}>
                                     <button
                                       type="button"
                                       className="btn btn-success btn-sm me-2"
-                                      // onClick={() =>
-                                      //   dispatch(setUserUuid(u.uuid))
-                                      // }
                                     >
                                       <MdOutlineModeEdit />
                                     </button>

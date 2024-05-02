@@ -87,3 +87,23 @@ export const priorityBadge = (value) => {
   }
   return badge;
 };
+
+export const priorityTextColor = (value) => {
+  let textClass = "";
+  switch (value) {
+    case "High":
+      textClass = `text-danger`;
+      break;
+    case "Medium":
+      textClass = `text-primary`;
+      break;
+    case "Low":
+      textClass = `text-success`;
+      break;
+
+    default:
+      textClass = `text-success`;
+      break;
+  }
+  return <span className={`ms-1 fw-bolder ${textClass}`}>({value})</span>;
+};

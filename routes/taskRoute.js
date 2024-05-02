@@ -8,7 +8,9 @@ import {
   getTaskWithPaginationAdmin,
   getTaskWithPaginationLead,
   getTaskWithPaginationUser,
+  taskAllData,
   taskAssignee,
+  taskRemarks,
   updateTask,
 } from "../controller/taskController.js";
 import {
@@ -22,6 +24,8 @@ router.get(`/lead`, getTaskWithPaginationLead);
 router.get(`/user`, getTaskWithPaginationUser);
 router.route(`/tasks/:id`).get(editTask).delete(deleteTask);
 router.patch(`/tasks/:uuid`, validateTask, updateTask);
+router.get(`/all-data/:uuid`, taskAllData);
+router.get(`/task-remarks/:uuid`, taskRemarks);
 router.post(`/validate-assignee`, validateTaskAssign, taskAssignee);
 router.post(`/activate-task/:id`, activateTask);
 

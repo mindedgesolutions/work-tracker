@@ -139,6 +139,7 @@ export const updateTask = async (req, res) => {
   }
 
   const long = taskDescLong ? taskDescLong.trim() : null;
+  const createdAt = currentDate();
   const updatedAt = currentDate();
 
   try {
@@ -169,9 +170,9 @@ export const updateTask = async (req, res) => {
     for (const assignee of assigns) {
       const tdesc = assignee.taskDesc ? assignee.taskDesc.trim() : null;
       const details = await pool.query(
-        `insert into task_details(task_id, assigned_to, priority, time_allotted, time_unit, task_desc, created_at, updated_at) values($1, $2, $3, $4, $5, $6, $7, $8) returning id`,
+        `insert into task_details(task_id, assigned_to, priority, time_allotted, time_unit, task_desc, created_at, updated_at) values($1, $2, $3, $4, $5, $6, $7, $8)`,
         [
-          Number(taskId),
+          Number(tid),
           Number(assignee.userId),
           Number(assignee.priority),
           Number(assignee.time),
@@ -212,6 +213,77 @@ export const activateTask = async (req, res) => {
   );
 
   res.status(StatusCodes.ACCEPTED).json({ data });
+};
+
+// ------
+export const taskAllData = async (req, res) => {
+  const { uuid } = req.params;
+
+  const taskId = await pool.query(`select id from task_master where uuid=$1`, [
+    uuid,
+  ]);
+  const tid = taskId.rows[0].id;
+  const data = await pool.query(
+    `select tm.*,
+    json_agg(
+      json_build_object(
+        'assign_name', um.name
+      )
+    ) as details,
+    uma.name as assignby,
+    pr.name as prname,
+    prm.name as priorityname
+    from task_master tm
+    left join task_details td on td.task_id = tm.id
+    left join users um on td.assigned_to = um.id
+    left join users uma on uma.id = tm.assigned_by
+    left join projects pr on pr.id = tm.project_id
+    left join priority_master prm on prm.id = tm.priority
+    where tm.id is not null and tm.id=$1
+    group by tm.id, pr.name, prm.name, uma.name`,
+    [tid]
+  );
+
+  res.status(StatusCodes.OK).json({ data });
+};
+
+// ------
+export const taskRemarks = async (req, res) => {
+  const { uuid } = req.params;
+  const { name, page } = req.query;
+  const pagination = paginationLogic(page, null);
+
+  const taskId = await pool.query(`select id from task_master where uuid=$1`, [
+    uuid,
+  ]);
+  const tid = taskId.rows[0].id;
+  const data = await pool.query(
+    `select tr.*,
+    json_agg(
+      json_build_object(
+        'assign_name', um.name
+      )
+    ) as details
+    from task_remarks tr
+    left join users um on tr.remark_by = um.id
+    where tr.id is not null and tr.id=$1 group by tr.id offset $2 limit $3`,
+    [tid, pagination.offset, pagination.pageLimit]
+  );
+
+  const records = await pool.query(
+    `select tr.* from task_remarks tr
+    left join users um on tr.remark_by = um.id
+    where tr.id is not null group by tr.id`,
+    []
+  );
+  const totalPages = Math.ceil(records.rowCount / pagination.pageLimit);
+  const meta = {
+    totalPages: totalPages,
+    currentPage: pagination.pageNo,
+    totalRecords: records.rowCount,
+  };
+
+  res.status(StatusCodes.OK).json({ data, meta });
 };
 
 // ------
