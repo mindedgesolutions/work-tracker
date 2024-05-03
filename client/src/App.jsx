@@ -32,6 +32,7 @@ const router = createBrowserRouter([
       },
       { path: "user-permissions", element: <Wt.UserPermission /> },
       { path: "tasks", element: <Wt.TaskAdmin /> },
+      { path: "teams", element: <Wt.TeamList /> },
     ],
   },
   {

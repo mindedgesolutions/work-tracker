@@ -14,12 +14,35 @@ export const addNewUser = async (req, res) => {
   const createdAt = currentDate();
   const updatedAt = currentDate();
 
-  const data = await pool.query(
-    `insert into users(name, email, mobile, username, password, role_id, uuid, created_at, updated_at) values($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
-    [name, email, mobile, email, password, roleId, uid, createdAt, updatedAt]
-  );
+  try {
+    await pool.query(`BEGIN`);
 
-  res.status(StatusCodes.CREATED).json({ data });
+    const data = await pool.query(
+      `insert into users(name, email, mobile, username, password, role_id, uuid, created_at, updated_at) values($1, $2, $3, $4, $5, $6, $7, $8, $9) returning id`,
+      [name, email, mobile, email, password, roleId, uid, createdAt, updatedAt]
+    );
+
+    const userId = data.rows[0].id;
+
+    const permissions = await pool.query(
+      `select * from map_role_permission where role_id=$1`,
+      [roleId]
+    );
+
+    for (const permission of permissions.rows) {
+      const ins = await pool.query(
+        `insert into map_user_permission(user_id, permission_id) values($1, $2)`,
+        [userId, permission.permission_id]
+      );
+    }
+
+    await pool.query(`COMMIT`);
+
+    res.status(StatusCodes.CREATED).json({ data });
+  } catch (error) {
+    await pool.query(`ROLLBACK`);
+    return error;
+  }
 };
 
 // ------
@@ -29,12 +52,35 @@ export const editUserDetails = async (req, res) => {
   const { id } = req.params;
   const updatedAt = currentDate();
 
-  const data = await pool.query(
-    `update users set name=$1, email=$2, mobile=$3, role_id=$4, updated_at=$5 where id=$6`,
-    [name, email, mobile, roleId, updatedAt, id]
-  );
+  try {
+    await pool.query(`BEGIN`);
 
-  res.status(StatusCodes.OK).json({ data });
+    const data = await pool.query(
+      `update users set name=$1, email=$2, mobile=$3, role_id=$4, updated_at=$5 where id=$6`,
+      [name, email, mobile, roleId, updatedAt, id]
+    );
+
+    await pool.query(`delete from map_user_permission where user_id=$1`, [id]);
+
+    const permissions = await pool.query(
+      `select * from map_role_permission where role_id=$1`,
+      [roleId]
+    );
+
+    for (const permission of permissions.rows) {
+      const ins = await pool.query(
+        `insert into map_user_permission(user_id, permission_id) values($1, $2)`,
+        [id, permission.permission_id]
+      );
+    }
+
+    await pool.query(`COMMIT`);
+
+    res.status(StatusCodes.ACCEPTED).json({ data });
+  } catch (error) {
+    await pool.query(`ROLLBACK`);
+    return error;
+  }
 };
 
 // ------

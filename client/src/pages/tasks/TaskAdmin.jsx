@@ -20,7 +20,7 @@ import { setListTask, setShowDelModal } from "../../features/task/taskSlice";
 import { toast } from "react-toastify";
 
 const TaskAdmin = () => {
-  document.title = `List of Tasks | ${import.meta.env.VITE_COMMON_TITLE}`;
+  document.title = `List of Tasks | ${import.meta.env.VITE_ADMIN_TITLE}`;
 
   const dispatch = useDispatch();
   const { search } = useLocation();
@@ -155,9 +155,10 @@ const TaskAdmin = () => {
                                 ? u?.prname?.toUpperCase().slice(0, 20) + ` ...`
                                 : u?.prname?.toUpperCase()}
                             </td>
-                            <td>
+                            <td title={u?.short_desc}>
                               {u?.short_desc?.length > 20
-                                ? u?.short_desc?.toUpperCase()?.slice(0, 20)
+                                ? u?.short_desc?.toUpperCase()?.slice(0, 20) +
+                                  ` ...`
                                 : u?.short_desc?.toUpperCase()}
                             </td>
                             <td>

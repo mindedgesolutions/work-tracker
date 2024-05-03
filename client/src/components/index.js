@@ -15,6 +15,7 @@ export { default as AddEditPermission } from "./rolesPermissions/AddEditPermissi
 export { default as ViewProject } from "./rolesPermissions/ViewProject";
 export { default as AssignPermissionToRole } from "./rolesPermissions/AssignPermissionToRole";
 export { default as AssignPermissionToUser } from "./rolesPermissions/AssignPermissionToUser";
+export { default as AssignTeam } from "./rolesPermissions/AssignTeam";
 export { default as AddEditAssignee } from "./tasks/AddEditAssignee";
 export { default as FilterTask } from "./tasks/FilterTask";
 export { default as TaskDeleteModal } from "./tasks/TaskDeleteModal";

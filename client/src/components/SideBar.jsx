@@ -8,6 +8,7 @@ import { GrUserSettings } from "react-icons/gr";
 import { FiUsers } from "react-icons/fi";
 import { useSelector } from "react-redux";
 import { FaTasks } from "react-icons/fa";
+import { BsMicrosoftTeams } from "react-icons/bs";
 
 const SideBar = () => {
   const { loggedInUser } = useSelector((store) => store.auth);
@@ -149,6 +150,15 @@ const SideBar = () => {
                 </div>
               </li>
             )}
+
+            <li className="nav-item">
+              <Link className="nav-link" to="/admin/teams">
+                <span className="nav-link-icon d-md-none d-lg-inline-block">
+                  <BsMicrosoftTeams size={18} />
+                </span>
+                <span className="nav-link-title">Teams</span>
+              </Link>
+            </li>
 
             {prArray?.some((i) => i.id === 2) && (
               <li className="nav-item">

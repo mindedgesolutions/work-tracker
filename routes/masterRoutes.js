@@ -38,6 +38,7 @@ import {
   updateMenu,
 } from "../controller/masters/menuController.js";
 import { getAllPriority } from "../controller/masters/priorityController.js";
+import { getTeamWithPagination } from "../controller/masters/teamController.js";
 
 router.get(`/all-roles`, getAllRoles);
 router
@@ -77,5 +78,7 @@ router
 router.patch(`/menus/:id`, updateMenu);
 
 router.get(`/priorities`, getAllPriority);
+
+router.get(`/teams`, getTeamWithPagination);
 
 export default router;
