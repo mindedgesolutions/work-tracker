@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   PageHeader,
   PageWrapper,
@@ -7,11 +7,14 @@ import {
 } from "../../components";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { nanoid } from "nanoid";
-import { serialNo } from "../../../utils/functions";
-import { useDispatch } from "react-redux";
+import { priorityBadge, serialNo } from "../../../utils/functions";
+import { useDispatch, useSelector } from "react-redux";
 import { IoFolderOpen } from "react-icons/io5";
 import { MdOutlineModeEdit, MdOutlinePowerSettingsNew } from "react-icons/md";
 import { FaRegTrashCan } from "react-icons/fa6";
+import { splitErrors } from "../../../utils/showErrors";
+import customFetch from "../../../utils/customFetch";
+import { setListTask } from "../../features/task/taskSlice";
 
 const TaskUser = () => {
   const dispatch = useDispatch();
@@ -20,12 +23,32 @@ const TaskUser = () => {
   const queryParams = new URLSearchParams(search);
 
   const [isLoading, setIsLoading] = useState(false);
+  const { listTask } = useSelector((store) => store.tasks);
+
+  const fetchData = async () => {
+    setIsLoading(true);
+    try {
+      const response = await customFetch.get(`/tasks/user`, {
+        params: {
+          page: queryParams.get("page") || "",
+        },
+      });
+      dispatch(setListTask(response.data.data.rows));
+      setIsLoading(false);
+    } catch (error) {
+      setIsLoading(false);
+      splitErrors(error?.response?.data?.msg);
+    }
+  };
+  console.log(listTask);
+
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   const totalRecords = 10;
   const pageCount = 0;
   const currentPage = 0;
-
-  const listTask = [];
 
   return (
     <>
