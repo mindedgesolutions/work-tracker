@@ -13,7 +13,7 @@ import { splitErrors } from "../../../utils/showErrors";
 import customFetch from "../../../utils/customFetch";
 import { useDispatch, useSelector } from "react-redux";
 import { setTask, setTaskRemarks } from "../../features/task/taskSlice";
-import { priorityTextColor } from "../../../utils/functions";
+import { priorityTextColor, titleExtension } from "../../../utils/functions";
 import { nanoid } from "nanoid";
 
 const ViewTask = () => {
@@ -47,9 +47,9 @@ const ViewTask = () => {
     }
   };
 
-  document.title = `View Details of ${task?.task_id} | ${
-    import.meta.env.VITE_COMMON_TITLE
-  }`;
+  const title = titleExtension(returnPath);
+
+  document.title = `View Details of ${task?.task_id} | ${title}`;
 
   const totalRecords = meta.totalRecords;
   const pageCount = meta.totalPages;

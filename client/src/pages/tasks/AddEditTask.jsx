@@ -13,6 +13,7 @@ import {
   setTaskAssignees,
   unsetTaskAssigneee,
 } from "../../features/task/taskSlice";
+import { titleExtension } from "../../../utils/functions";
 
 const AddEditTask = () => {
   const dispatch = useDispatch();
@@ -92,9 +93,11 @@ const AddEditTask = () => {
     ? `Update details : ${form.taskId}`
     : `Add new task`;
 
+  const title = titleExtension(returnPath);
+
   document.title = form.editId
-    ? `Update Details of ${form.taskId} | ${import.meta.env.VITE_COMMON_TITLE}`
-    : `Add New Task | ${import.meta.env.VITE_COMMON_TITLE}`;
+    ? `Update Details of ${form.taskId} | ${title}`
+    : `Add New Task | ${title}`;
 
   const numbers = Array.from({ length: 7 }, (_, index) => index + 1);
 

@@ -18,6 +18,9 @@ const projectSlice = createSlice({
     setProjects: (state, action) => {
       state.projects = action.payload;
     },
+    unsetProjects: (state) => {
+      state.projects = [];
+    },
     setListProject: (state, action) => {
       state.listProject = action.payload;
     },
@@ -81,6 +84,7 @@ const projectSlice = createSlice({
 
 export const {
   setProjects,
+  unsetProjects,
   setListProject,
   setProjectId,
   unsetProjectId,

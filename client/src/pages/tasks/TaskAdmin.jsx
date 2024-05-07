@@ -109,7 +109,7 @@ const TaskAdmin = () => {
         </div>
       </div>
       <PageWrapper>
-        <FilterTask />
+        <FilterTask type={`admin`} />
         <div className="col-12">
           <div className="card">
             <div className="card-header">Total {totalRecords} users found</div>

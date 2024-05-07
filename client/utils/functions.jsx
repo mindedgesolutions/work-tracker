@@ -107,3 +107,22 @@ export const priorityTextColor = (value) => {
   }
   return <span className={`ms-1 fw-bolder ${textClass}`}>({value})</span>;
 };
+
+export const titleExtension = (value) => {
+  let title = "";
+  switch (value) {
+    case "/admin":
+      title = import.meta.env.VITE_ADMIN_TITLE;
+      break;
+    case "/lead":
+      title = import.meta.env.VITE_LEAD_TITLE;
+      break;
+    case "/user":
+      title = import.meta.env.VITE_USER_TITLE;
+      break;
+    default:
+      title = import.meta.env.VITE_COMMON_TITLE;
+      break;
+  }
+  return title;
+};

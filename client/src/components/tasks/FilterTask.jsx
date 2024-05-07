@@ -5,7 +5,7 @@ import { nanoid } from "nanoid";
 import { Form, useLocation, useNavigate } from "react-router-dom";
 import UserNameIdFilter from "../UserNameIdFilter";
 
-const FilterTask = () => {
+const FilterTask = ({ type }) => {
   const navigate = useNavigate();
   const { search } = useLocation();
   const queryParams = new URLSearchParams(search);
@@ -101,10 +101,12 @@ const FilterTask = () => {
                   className="form-control"
                 />
               </div>
-              <div className="col-md-3 col-sm-12">
-                <label className="form-label">Assignee</label>
-                <UserNameIdFilter />
-              </div>
+              {type === "admin" && (
+                <div className="col-md-3 col-sm-12">
+                  <label className="form-label">Assignee</label>
+                  <UserNameIdFilter />
+                </div>
+              )}
             </div>
           </div>
           <div className="mt-2 card-footer text-center">

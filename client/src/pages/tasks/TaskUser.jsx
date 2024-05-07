@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {
+  FilterTask,
   PageHeader,
   PageWrapper,
   PaginationContainer,
@@ -31,6 +32,9 @@ const TaskUser = () => {
       const response = await customFetch.get(`/tasks/user`, {
         params: {
           page: queryParams.get("page") || "",
+          projectId: queryParams.get("prj") || "",
+          priority: queryParams.get("pr") || "",
+          taskId: queryParams.get("tid") || "",
         },
       });
       dispatch(setListTask(response.data.data.rows));
@@ -40,11 +44,15 @@ const TaskUser = () => {
       splitErrors(error?.response?.data?.msg);
     }
   };
-  console.log(listTask);
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [
+    queryParams.get("page"),
+    queryParams.get("prj"),
+    queryParams.get("pr"),
+    queryParams.get("tid"),
+  ]);
 
   const totalRecords = 10;
   const pageCount = 0;
@@ -60,6 +68,8 @@ const TaskUser = () => {
         </div>
       </div>
       <PageWrapper>
+        <FilterTask type={`user`} />
+
         <div className="col-12">
           <div className="card">
             <div className="card-header">Total {totalRecords} users found</div>

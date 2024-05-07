@@ -119,6 +119,28 @@ export const getAllProjects = async (req, res) => {
 
 // ------
 
+export const getAllProjectsLead = async (req, res) => {};
+
+// ------
+
+export const getAllProjectsUser = async (req, res) => {
+  const { id } = req.params;
+
+  const data = await pool.query(
+    `select distinct tm.project_id, pm.name
+    from task_master tm
+    left join task_details td on tm.id = td.task_id
+    left join projects pm on tm.project_id = pm.id
+    where td.assigned_to=$1`,
+    [id]
+  );
+  console.log(data);
+
+  res.status(StatusCodes.OK).json({ data });
+};
+
+// ------
+
 export const getProjectWithPagination = async (req, res) => {
   const { name, page } = req.query;
   const pagination = paginationLogic(page, null);

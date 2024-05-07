@@ -18,6 +18,7 @@ import {
   addNewProject,
   deleteProject,
   getAllProjects,
+  getAllProjectsUser,
   getProjectWithPagination,
   projectContact,
   updateProject,
@@ -57,6 +58,8 @@ router
   .route(`/projects/:id`)
   .patch(validateProject, updateProject)
   .delete(deleteProject);
+
+router.get(`/projects/user/:id`, getAllProjectsUser);
 
 router.get(`/all-permissions`, getAllPermissions);
 router

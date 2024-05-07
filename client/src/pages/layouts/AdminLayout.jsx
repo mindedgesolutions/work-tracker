@@ -9,7 +9,10 @@ import { Outlet, redirect, useNavigate } from "react-router-dom";
 import customFetch from "../../../utils/customFetch.js";
 import { splitErrors } from "../../../utils/showErrors.jsx";
 import { setRoles } from "../../features/masters/roleSlice.js";
-import { setProjects } from "../../features/masters/projectSlice.js";
+import {
+  setProjects,
+  unsetProjects,
+} from "../../features/masters/projectSlice.js";
 import { setPermissions } from "../../features/masters/permissionSlice.js";
 import {
   setLoggedInUser,
@@ -62,6 +65,7 @@ const AdminLayout = () => {
       await customFetch.get(`/auth/logout`);
       toast.success(`You're logged out`);
       dispatch(unsetLoggedInUser());
+      dispatch(unsetProjects());
       navigate("/");
     } catch (error) {
       splitErrors(error?.response?.data?.msg);
