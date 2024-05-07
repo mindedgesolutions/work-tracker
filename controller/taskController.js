@@ -248,45 +248,6 @@ export const taskAllData = async (req, res) => {
 };
 
 // ------
-export const taskRemarks = async (req, res) => {
-  const { uuid } = req.params;
-  const { name, page } = req.query;
-  const pagination = paginationLogic(page, null);
-
-  const taskId = await pool.query(`select id from task_master where uuid=$1`, [
-    uuid,
-  ]);
-  const tid = taskId.rows[0].id;
-  const data = await pool.query(
-    `select tr.*,
-    json_agg(
-      json_build_object(
-        'assign_name', um.name
-      )
-    ) as details
-    from task_remarks tr
-    left join users um on tr.remark_by = um.id
-    where tr.id is not null and tr.id=$1 group by tr.id offset $2 limit $3`,
-    [tid, pagination.offset, pagination.pageLimit]
-  );
-
-  const records = await pool.query(
-    `select tr.* from task_remarks tr
-    left join users um on tr.remark_by = um.id
-    where tr.id is not null group by tr.id`,
-    []
-  );
-  const totalPages = Math.ceil(records.rowCount / pagination.pageLimit);
-  const meta = {
-    totalPages: totalPages,
-    currentPage: pagination.pageNo,
-    totalRecords: records.rowCount,
-  };
-
-  res.status(StatusCodes.OK).json({ data, meta });
-};
-
-// ------
 export const getTaskWithPaginationAdmin = async (req, res) => {
   const { page, projectId, priority, taskId, userId } = req.query;
   const pagination = paginationLogic(page, null);
@@ -346,8 +307,19 @@ export const getTaskWithPaginationLead = async (req, res) => {};
 // ------
 export const getTaskWithPaginationUser = async (req, res) => {
   const { uuid } = req.user;
-  const { page } = req.query;
+  const { page, projectId, priority, taskId } = req.query;
   const pagination = paginationLogic(page, null);
+
+  let filter = "";
+  if (projectId) {
+    filter += ` and tm.project_id=${projectId}`;
+  }
+  if (priority) {
+    filter += ` and tm.priority=${priority}`;
+  }
+  if (taskId) {
+    filter += ` and tm.task_id ilike '%${taskId.trim()}%'`;
+  }
 
   const user = await pool.query(`select id from users where uuid=$1`, [uuid]);
   const id = user.rows[0].id;
@@ -366,7 +338,7 @@ export const getTaskWithPaginationUser = async (req, res) => {
       left join users um on td.assigned_to = um.id
       left join projects pr on pr.id = tm.project_id
       left join priority_master prm on prm.id = tm.priority
-      where tm.id is not null and td.assigned_to = $3
+      where tm.id is not null ${filter} and td.assigned_to = $3
       group by tm.id, pr.name, prm.name offset $1 limit $2`,
     [pagination.offset, pagination.pageLimit, id]
   );
@@ -374,7 +346,7 @@ export const getTaskWithPaginationUser = async (req, res) => {
   const records = await pool.query(
     `select tm.* from task_master tm
       left join task_details td on td.task_id = tm.id
-      where tm.id is not null and td.assigned_to = $1 group by tm.id`,
+      where tm.id is not null ${filter} and td.assigned_to = $1 group by tm.id`,
     [id]
   );
   const totalPages = Math.ceil(records.rowCount / pagination.pageLimit);

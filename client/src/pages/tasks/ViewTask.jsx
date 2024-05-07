@@ -1,5 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { PageHeader, PageWrapper, PaginationContainer } from "../../components";
+import {
+  AddEditComment,
+  PageHeader,
+  PageWrapper,
+  PaginationContainer,
+} from "../../components";
 import {
   Form,
   Link,
@@ -13,8 +18,15 @@ import { splitErrors } from "../../../utils/showErrors";
 import customFetch from "../../../utils/customFetch";
 import { useDispatch, useSelector } from "react-redux";
 import { setTask, setTaskRemarks } from "../../features/task/taskSlice";
-import { priorityTextColor, titleExtension } from "../../../utils/functions";
+import {
+  initials,
+  priorityTextColor,
+  timeDifference,
+  titleExtension,
+} from "../../../utils/functions";
 import { nanoid } from "nanoid";
+import { dateFormatFancy } from "../../../utils/functions";
+import { MdOutlineModeEdit } from "react-icons/md";
 
 const ViewTask = () => {
   const params = useParams();
@@ -25,6 +37,8 @@ const ViewTask = () => {
 
   const { returnPath } = useSelector((store) => store.auth);
   const { task, taskRemarks } = useSelector((store) => store.tasks);
+  const { changeCount } = useSelector((store) => store.common);
+  const { loggedInUser } = useSelector((store) => store.auth);
 
   const [searchInput, setSearchInput] = useState("");
   const [taskUuid, setTaskUuid] = useState("");
@@ -38,7 +52,7 @@ const ViewTask = () => {
       const master = await customFetch.get(`/tasks/all-data/${params.id}`);
       dispatch(setTask(master.data.data.rows[0]));
 
-      const remarks = await customFetch.get(`/tasks/task-remarks/${params.id}`);
+      const remarks = await customFetch.get(`/remarks/remarks/${params.id}`);
       dispatch(setTaskRemarks(remarks.data.data.rows));
       setMeta(remarks.data.meta);
     } catch (error) {
@@ -59,7 +73,7 @@ const ViewTask = () => {
 
   useEffect(() => {
     fetchData();
-  }, [params.id]);
+  }, [params.id, changeCount]);
 
   return (
     <>
@@ -75,7 +89,9 @@ const ViewTask = () => {
       </div>
       <PageWrapper>
         <div className="col-md-5 col-sm-12">
-          <div className="card">
+          <AddEditComment />
+
+          <div className="card mt-3">
             <div className="card-header pb-0">
               <h3 className="card title border-0">Task details</h3>
             </div>
@@ -121,6 +137,7 @@ const ViewTask = () => {
             </div>
           </div>
         </div>
+
         <div className="col-md-7 col-sm-12">
           <div className="card">
             <div className="card-header">
@@ -159,34 +176,58 @@ const ViewTask = () => {
                 </Form>
               </div>
             </div>
+            {console.log(taskRemarks)}
 
             <div className="card-body">
-              {task?.remarks?.map((i) => {
-                return (
-                  i.remark_by_id && (
-                    <div key={nanoid()} className="list-group-item mb-3">
-                      <div className="row align-items-center">
+              <div className="divide-y">
+                {taskRemarks?.map((i) => {
+                  const initialLetters = initials(i.details[0].assign_name);
+
+                  return (
+                    <div key={nanoid()} className="list-group-item">
+                      <div className="row">
                         <div className="col-auto">
-                          <span className="badge bg-red"></span>
+                          <span className="avatar">{initialLetters}</span>
                         </div>
                         <div className="col">
-                          <a href="#" className="text-reset">
-                            Pawel Kuna
-                          </a>
-                          <div className="text-secondary">
-                            Change deprecated html tags to text decoration
-                            classes (#29604) Lorem ipsum, dolor sit amet
-                            consectetur adipisicing elit. Ex error qui inventore
-                            obcaecati sequi, amet dolorum necessitatibus ratione
-                            molestiae libero maiores voluptas cumque magnam quo
-                            pariatur labore iure optio. Recusandae.
+                          <div className="">
+                            {i.remark.length > 150
+                              ? i.remark.substr(0, 150) + `Show More ...`
+                              : i.remark}
+                          </div>
+                          <div className="row mt-3">
+                            <div className="col">
+                              <div className="text-secondary fs-6">
+                                TIME TAKEN:{" "}
+                                {timeDifference(i.start_time, i.end_time)}
+                              </div>
+                            </div>
+                            <div className="col-auto ms-auto">
+                              <div className="text-secondary fs-6">
+                                <span className="me-1">
+                                  {i.details[0].assign_name.toUpperCase()}
+                                </span>
+                                |
+                                <span className="ms-1">
+                                  {dateFormatFancy(i.created_at)?.toUpperCase()}
+                                </span>
+                                {i.remark_by === loggedInUser.id && (
+                                  <button
+                                    type="button"
+                                    className="btn btn-success btn-sm ms-2 me-2"
+                                  >
+                                    <MdOutlineModeEdit />
+                                  </button>
+                                )}
+                              </div>
+                            </div>
                           </div>
                         </div>
                       </div>
                     </div>
-                  )
-                );
-              })}
+                  );
+                })}
+              </div>
             </div>
             <PaginationContainer
               pageCount={pageCount}

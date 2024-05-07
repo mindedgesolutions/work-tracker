@@ -1,4 +1,5 @@
 import date from "date-and-time";
+import dayjs from "dayjs";
 
 export const generateRandomNumber = () => {
   const min = 100000;
@@ -125,4 +126,34 @@ export const titleExtension = (value) => {
       break;
   }
   return title;
+};
+
+export const initials = (value) => {
+  const arr = value.split(" ");
+  let word = "";
+  if (arr.length > 1) {
+    arr.map((i) => {
+      word += i[0];
+    });
+  } else {
+    word = value.substr(0, 2);
+  }
+  return word;
+};
+
+export const timeDifference = (startTime, endTime) => {
+  const start = dayjs(`2024-01-01 ${startTime}`);
+  const end = dayjs(`2024-01-01 ${endTime}`);
+
+  const differ = end.diff(start, "minutes", true);
+  let hours, minutes, label;
+
+  if (differ >= 60) {
+    hours = Math.floor(differ / 60);
+    minutes = differ % 60;
+    label = hours + ` Hr ` + (minutes ? minutes + ` Min` : ``);
+  } else {
+    label = differ + ` Min`;
+  }
+  return label;
 };

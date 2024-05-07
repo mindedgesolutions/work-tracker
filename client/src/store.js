@@ -7,6 +7,7 @@ import teamReducer from "./features/masters/teamSlice";
 import userReducer from "./features/users/userSlice";
 import authReducer from "./features/auth/authSlice";
 import taskReducer from "./features/task/taskSlice";
+import taskCommentReducer from "./features/task/taskCommentSlice";
 
 export const store = configureStore({
   reducer: {
@@ -18,5 +19,6 @@ export const store = configureStore({
     users: userReducer,
     auth: authReducer,
     tasks: taskReducer,
+    taskComments: taskCommentReducer,
   },
 });

@@ -24,6 +24,8 @@ const TaskUser = () => {
   const queryParams = new URLSearchParams(search);
 
   const [isLoading, setIsLoading] = useState(false);
+  const [metaData, setMetaData] = useState("");
+
   const { listTask } = useSelector((store) => store.tasks);
 
   const fetchData = async () => {
@@ -38,6 +40,7 @@ const TaskUser = () => {
         },
       });
       dispatch(setListTask(response.data.data.rows));
+      setMetaData(response.data.meta);
       setIsLoading(false);
     } catch (error) {
       setIsLoading(false);
@@ -54,9 +57,9 @@ const TaskUser = () => {
     queryParams.get("tid"),
   ]);
 
-  const totalRecords = 10;
-  const pageCount = 0;
-  const currentPage = 0;
+  const totalRecords = metaData.totalRecords;
+  const pageCount = metaData.totalPages;
+  const currentPage = metaData.currentPage;
 
   return (
     <>
@@ -167,31 +170,6 @@ const TaskUser = () => {
                                   <IoFolderOpen size={14} />
                                 </button>
                               </Link>
-                              {u.is_active ? (
-                                <>
-                                  <Link to={`/task/${u.uuid}`}>
-                                    <button
-                                      type="button"
-                                      className="btn btn-success btn-sm me-2"
-                                    >
-                                      <MdOutlineModeEdit />
-                                    </button>
-                                  </Link>
-                                  <button
-                                    type="button"
-                                    className="btn btn-danger btn-sm me-2"
-                                  >
-                                    <FaRegTrashCan />
-                                  </button>
-                                </>
-                              ) : (
-                                <button
-                                  type="button"
-                                  className="btn btn-warning btn-sm me-2"
-                                >
-                                  <MdOutlinePowerSettingsNew />
-                                </button>
-                              )}
                             </td>
                           </tr>
                         );
