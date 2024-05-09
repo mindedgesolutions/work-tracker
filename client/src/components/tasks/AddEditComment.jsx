@@ -6,6 +6,7 @@ import customFetch from "../../../utils/customFetch";
 import { useParams } from "react-router-dom";
 import { updateChangeCount } from "../../features/common/commonSlice";
 import { toast } from "react-toastify";
+import { unsetRemarkId } from "../../features/task/remarkSlice";
 
 const AddEditComment = () => {
   const dispatch = useDispatch();
@@ -30,14 +31,20 @@ const AddEditComment = () => {
     setIsLoading(true);
     const formData = new FormData(e.currentTarget);
     const data = Object.fromEntries(formData);
+    const process = remarkId ? customFetch.patch : customFetch.post;
+    const apiUrl = remarkId
+      ? `/remarks/remarks/${remarkId}`
+      : `/remarks/remarks/${params.id}`;
+    const msg = remarkId ? `Comment updated` : `Comment added`;
     try {
-      const response = await customFetch.post(
-        `/remarks/remarks/${params.id}`,
-        data
-      );
+      const response = await process(apiUrl, data);
+
       dispatch(updateChangeCount());
+      dispatch(unsetRemarkId());
+
       setForm({ ...form, startTime: "", endTime: "", comments: "" });
-      toast.success(`Comment added`);
+
+      toast.success(msg);
       setIsLoading(false);
     } catch (error) {
       setIsLoading(false);
@@ -48,6 +55,7 @@ const AddEditComment = () => {
 
   const handleReset = () => {
     setForm({ ...form, startTime: "", endTime: "", comments: "" });
+    unsetRemarkId();
   };
 
   useEffect(() => {

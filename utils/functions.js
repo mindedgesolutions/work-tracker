@@ -5,6 +5,7 @@ import jwt from "jsonwebtoken";
 import date from "date-and-time";
 import { checkIfNum } from "./formatValidation.js";
 
+// ------
 export const createUsername = async (name) => {
   let username = slug(name);
   const check = await pool.query(
@@ -20,10 +21,12 @@ export const createUsername = async (name) => {
   return newUsername;
 };
 
+// ------
 export const currentDate = () => {
   return dayjs().format("YYYY-MM-DD HH:mm:ss");
 };
 
+// ------
 export const formatDate = (value) => {
   const startArray = value.split("-");
   const filterStart = dayjs(
@@ -34,6 +37,7 @@ export const formatDate = (value) => {
   return filterStart;
 };
 
+// ------
 export const formatStartDate = (date) => {
   const startArray = date.split("-");
   const filterStart = dayjs(
@@ -44,11 +48,13 @@ export const formatStartDate = (date) => {
   return filterStart;
 };
 
+// ------
 export const getUserId = async (uuid) => {
   const data = await pool.query(`select id from users where uuid=$1`, [uuid]);
   return data.rows[0].id;
 };
 
+// ------
 export const generateTaskId = async (projectId, id) => {
   let concat;
   switch (id.toString().length) {

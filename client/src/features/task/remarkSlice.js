@@ -4,6 +4,7 @@ const initialState = {
   taskRemarks: [],
   remarkId: "",
   allRemarks: [],
+  showDelModal: false,
 };
 
 const remarkSlice = createSlice({
@@ -28,6 +29,14 @@ const remarkSlice = createSlice({
     unsetAllRemarks: (state) => {
       state.allRemarks = [];
     },
+    setShowDelModal: (state, action) => {
+      state.remarkId = action.payload;
+      state.showDelModal = true;
+    },
+    unsetShowDelModal: (state) => {
+      state.remarkId = "";
+      state.showDelModal = false;
+    },
   },
 });
 
@@ -38,5 +47,7 @@ export const {
   unsetRemarkId,
   setAllRemarks,
   unsetAllRemarks,
+  setShowDelModal,
+  unsetShowDelModal,
 } = remarkSlice.actions;
 export default remarkSlice.reducer;

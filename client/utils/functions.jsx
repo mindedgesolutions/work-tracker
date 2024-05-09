@@ -1,6 +1,7 @@
 import date from "date-and-time";
 import dayjs from "dayjs";
 
+// ------
 export const generateRandomNumber = () => {
   const min = 100000;
   const max = 999999;
@@ -8,44 +9,53 @@ export const generateRandomNumber = () => {
   return randomNumber;
 };
 
+// ------
 export const serialNo = (page) => {
   const slNo = Number(page) === 1 || !page ? 1 : (Number(page) - 1) * 10 + 1;
   return slNo;
 };
 
+// ------
 export const dateFormat = (value) => {
   const formatted = new Date(value);
   return date.format(formatted, "DD-MM-YYYY");
 };
 
+// ------
 export const dateFormatFancy = (value) => {
   const formatted = new Date(value);
   return date.format(formatted, "ddd, MMM DD YYYY");
 };
 
+// ------
 export const datePickerFormat = (value) => {
   const formatted = new Date(value);
   return date.format(formatted, "YYYY-MM-DD");
 };
 
+// ------
 export const getFileExtension = (fileName) => {
   return fileName.split(".").pop();
 };
 
+// ------
 export const currentDate = () => {
   return dayjs(new Date()).format("YYYY-MM-DD");
 };
 
+// ------
 export const compareFormatDate = (value) => {
   return dayjs(value).format("YYYY-MM-DD");
 };
 
+// ------
 export const randomBadgeBg = () => {
   const colorArray = ["azure", "purple", "pink", "yellow", "green", "cyan"];
   const randomIndex = Math.floor(Math.random() * colorArray.length);
   return colorArray[randomIndex];
 };
 
+// ------
 export const roleBadge = (value) => {
   let badge;
   switch (value) {
@@ -78,6 +88,7 @@ export const roleBadge = (value) => {
   return badge;
 };
 
+// ------
 export const priorityBadge = (value) => {
   let badge;
   switch (value) {
@@ -97,6 +108,7 @@ export const priorityBadge = (value) => {
   return badge;
 };
 
+// ------
 export const priorityTextColor = (value) => {
   let textClass = "";
   switch (value) {
@@ -117,6 +129,7 @@ export const priorityTextColor = (value) => {
   return <span className={`ms-1 fw-bolder ${textClass}`}>({value})</span>;
 };
 
+// ------
 export const titleExtension = (value) => {
   let title = "";
   switch (value) {
@@ -136,6 +149,7 @@ export const titleExtension = (value) => {
   return title;
 };
 
+// ------
 export const initials = (value) => {
   const arr = value.split(" ");
   let word = "";
@@ -149,6 +163,7 @@ export const initials = (value) => {
   return word;
 };
 
+// ------
 export const timeDifference = (startTime, endTime) => {
   const start = dayjs(`2024-01-01 ${startTime}`);
   const end = dayjs(`2024-01-01 ${endTime}`);

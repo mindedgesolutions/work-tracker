@@ -4,6 +4,7 @@ import {
   PageHeader,
   PageWrapper,
   PaginationContainer,
+  RemarkDeleteModal,
   TaskRemarks,
 } from "../../components";
 import {
@@ -187,6 +188,9 @@ const ViewTask = () => {
               </div>
             </div>
             <TaskRemarks />
+
+            <RemarkDeleteModal />
+
             <PaginationContainer
               pageCount={pageCount}
               currentPage={currentPage}

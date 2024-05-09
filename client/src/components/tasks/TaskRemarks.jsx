@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   compareFormatDate,
@@ -8,7 +8,7 @@ import {
   timeDifference,
 } from "../../../utils/functions";
 import { nanoid } from "nanoid";
-import { setRemarkId } from "../../features/task/remarkSlice";
+import { setRemarkId, setShowDelModal } from "../../features/task/remarkSlice";
 import { MdOutlineModeEdit } from "react-icons/md";
 import { FaRegTrashCan } from "react-icons/fa6";
 
@@ -16,6 +16,7 @@ const TaskRemarks = () => {
   const dispatch = useDispatch();
   const { taskRemarks } = useSelector((store) => store.remarks);
   const { loggedInUser } = useSelector((store) => store.auth);
+  const [toggleDesc, setToggleDesc] = useState(false);
 
   return (
     <div className="card-body">
@@ -33,9 +34,23 @@ const TaskRemarks = () => {
                 </div>
                 <div className="col">
                   <div className="">
-                    {i.remark.length > 150
-                      ? i.remark.substr(0, 150) + `Show More ...`
-                      : i.remark}
+                    {i.remark.length > 150 ? (
+                      <>
+                        <span className="me-1">
+                          {toggleDesc
+                            ? i.remark
+                            : i.remark.substr(0, 150) + `...`}
+                        </span>
+                        <span
+                          className="badge bg-purple-lt cursor-pointer"
+                          onClick={() => setToggleDesc(!toggleDesc)}
+                        >
+                          {toggleDesc ? `show less` : `show more`}
+                        </span>
+                      </>
+                    ) : (
+                      i.remark
+                    )}
                   </div>
                   <div className="row mt-3">
                     <div className="col">
@@ -66,7 +81,7 @@ const TaskRemarks = () => {
                               <button
                                 type="button"
                                 className="btn btn-danger btn-sm ms-1 me-1"
-                                onClick={() => dispatch(setRemarkId(i.id))}
+                                onClick={() => dispatch(setShowDelModal(i.id))}
                               >
                                 <FaRegTrashCan />
                               </button>

@@ -1,6 +1,6 @@
 import { StatusCodes } from "http-status-codes";
 import pool from "../db.js";
-import { paginationLogic, paginationLogicFive } from "../utils/pagination.js";
+import { paginationLogicFive } from "../utils/pagination.js";
 import { currentDate } from "../utils/functions.js";
 
 // ------
@@ -103,7 +103,24 @@ export const addRemark = async (req, res) => {
 };
 
 // ------
-export const updateRemark = async (req, res) => {};
+export const updateRemark = async (req, res) => {
+  const { id } = req.params;
+  const { startTime, endTime, comments } = req.body;
+
+  const updatedAt = currentDate();
+
+  const data = await pool.query(
+    `update task_remarks set remark=$1, updated_at=$2, start_time=$3, end_time=$4 where id=$5`,
+    [comments.trim(), updatedAt, startTime, endTime, id]
+  );
+
+  res.status(StatusCodes.ACCEPTED).json({ data });
+};
 
 // ------
-export const deleteRemark = async (req, res) => {};
+export const deleteRemark = async (req, res) => {
+  const { id } = req.params;
+  await pool.query(`delete from task_remarks where id=$1`, [id]);
+
+  res.status(StatusCodes.NO_CONTENT).json({ data: `success` });
+};
