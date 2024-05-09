@@ -32,6 +32,14 @@ export const getFileExtension = (fileName) => {
   return fileName.split(".").pop();
 };
 
+export const currentDate = () => {
+  return dayjs(new Date()).format("YYYY-MM-DD");
+};
+
+export const compareFormatDate = (value) => {
+  return dayjs(value).format("YYYY-MM-DD");
+};
+
 export const randomBadgeBg = () => {
   const colorArray = ["azure", "purple", "pink", "yellow", "green", "cyan"];
   const randomIndex = Math.floor(Math.random() * colorArray.length);

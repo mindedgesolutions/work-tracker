@@ -20,3 +20,4 @@ export { default as AddEditAssignee } from "./tasks/AddEditAssignee";
 export { default as FilterTask } from "./tasks/FilterTask";
 export { default as TaskDeleteModal } from "./tasks/TaskDeleteModal";
 export { default as AddEditComment } from "./tasks/AddEditComment";
+export { default as TaskRemarks } from "./tasks/TaskRemarks";

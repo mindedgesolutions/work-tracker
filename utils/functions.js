@@ -81,7 +81,6 @@ export const generateTaskId = async (projectId, id) => {
   }
 
   const taskId = `NICSI/` + prefix + `/` + concat;
-  console.log(taskId);
   return taskId;
 };
 

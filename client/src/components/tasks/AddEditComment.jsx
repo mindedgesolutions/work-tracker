@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import SubmitBtn from "../SubmitBtn";
 import { splitErrors } from "../../../utils/showErrors";
@@ -17,7 +17,9 @@ const AddEditComment = () => {
   });
   const [isLoading, setIsLoading] = useState(false);
 
-  const { taskId } = useSelector((store) => store.tasks);
+  const { remarkId, allRemarks } = useSelector((store) => store.remarks);
+
+  const remark = allRemarks?.find((i) => i.id === remarkId);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -47,6 +49,15 @@ const AddEditComment = () => {
   const handleReset = () => {
     setForm({ ...form, startTime: "", endTime: "", comments: "" });
   };
+
+  useEffect(() => {
+    setForm({
+      ...form,
+      startTime: remark?.start_time || "",
+      endTime: remark?.end_time || "",
+      comments: remark?.remark || "",
+    });
+  }, [remark]);
 
   return (
     <div className="col-12">
@@ -99,7 +110,7 @@ const AddEditComment = () => {
           <div className="mt-2 card-footer">
             <SubmitBtn
               isLoading={isLoading}
-              text={taskId ? `Save changes` : `Add comment`}
+              text={remarkId ? `Save changes` : `Add comment`}
             />
             <button
               type="button"

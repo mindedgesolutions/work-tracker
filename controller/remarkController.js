@@ -1,13 +1,15 @@
 import { StatusCodes } from "http-status-codes";
 import pool from "../db.js";
-import { paginationLogic } from "../utils/pagination.js";
+import { paginationLogic, paginationLogicFive } from "../utils/pagination.js";
 import { currentDate } from "../utils/functions.js";
 
 // ------
 export const taskRemarks = async (req, res) => {
   const { uuid } = req.params;
   const { name, page } = req.query;
-  const pagination = paginationLogic(page, null);
+  const pagination = paginationLogicFive(page, null);
+
+  const search = name ? ` and um.name ilike '%${name}%'` : ``;
 
   const taskId = await pool.query(`select id from task_master where uuid=$1`, [
     uuid,
@@ -22,14 +24,14 @@ export const taskRemarks = async (req, res) => {
     ) as details
     from task_remarks tr
     left join users um on tr.remark_by = um.id
-    where tr.id is not null and tr.task_id=$1 group by tr.id offset $2 limit $3`,
+    where tr.id is not null and tr.task_id=$1 ${search} group by tr.id order by tr.id desc offset $2 limit $3`,
     [tid, pagination.offset, pagination.pageLimit]
   );
 
   const records = await pool.query(
     `select tr.* from task_remarks tr
     left join users um on tr.remark_by = um.id
-    where tr.id is not null group by tr.id`,
+    where tr.id is not null ${search} group by tr.id`,
     []
   );
   const totalPages = Math.ceil(records.rowCount / pagination.pageLimit);
@@ -40,6 +42,21 @@ export const taskRemarks = async (req, res) => {
   };
 
   res.status(StatusCodes.OK).json({ data, meta });
+};
+
+// ------
+
+export const taskRemarksAll = async (req, res) => {
+  const { uuid } = req.params;
+  const taskId = await pool.query(`select id from task_master where uuid=$1`, [
+    uuid,
+  ]);
+  const tid = taskId.rows[0].id;
+  const data = await pool.query(`select * from task_remarks where task_id=$1`, [
+    tid,
+  ]);
+
+  res.status(StatusCodes.OK).json({ data });
 };
 
 // ------

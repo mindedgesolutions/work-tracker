@@ -7,7 +7,6 @@ const initialState = {
   listTask: [],
   showDelModal: false,
   task: "",
-  taskRemarks: [],
 };
 
 const taskSlice = createSlice({
@@ -79,12 +78,6 @@ const taskSlice = createSlice({
     unsetTask: (state) => {
       state.task = "";
     },
-    setTaskRemarks: (state, action) => {
-      state.taskRemarks = action.payload;
-    },
-    unsetTaskRemarks: (state) => {
-      state.taskRemarks = [];
-    },
   },
 });
 
@@ -102,7 +95,5 @@ export const {
   unsetShowDelModal,
   setTask,
   unsetTask,
-  setTaskRemarks,
-  unsetTaskRemarks,
 } = taskSlice.actions;
 export default taskSlice.reducer;

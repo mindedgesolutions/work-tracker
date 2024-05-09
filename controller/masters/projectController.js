@@ -134,7 +134,6 @@ export const getAllProjectsUser = async (req, res) => {
     where td.assigned_to=$1`,
     [id]
   );
-  console.log(data);
 
   res.status(StatusCodes.OK).json({ data });
 };

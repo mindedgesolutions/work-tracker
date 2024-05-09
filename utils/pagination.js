@@ -8,3 +8,11 @@ export const paginationLogic = (page, limit) => {
 
   return { pageLimit, offset, pageNo };
 };
+
+export const paginationLogicFive = (page, limit) => {
+  const pageLimit = limit || process.env.REMARKS_PER_PAGE;
+  const pageNo = Number(page) || 1;
+  const offset = (pageNo - 1) * Number(pageLimit);
+
+  return { pageLimit, offset, pageNo };
+};

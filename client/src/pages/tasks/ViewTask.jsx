@@ -4,6 +4,7 @@ import {
   PageHeader,
   PageWrapper,
   PaginationContainer,
+  TaskRemarks,
 } from "../../components";
 import {
   Form,
@@ -17,16 +18,10 @@ import { IoReloadSharp } from "react-icons/io5";
 import { splitErrors } from "../../../utils/showErrors";
 import customFetch from "../../../utils/customFetch";
 import { useDispatch, useSelector } from "react-redux";
-import { setTask, setTaskRemarks } from "../../features/task/taskSlice";
-import {
-  initials,
-  priorityTextColor,
-  timeDifference,
-  titleExtension,
-} from "../../../utils/functions";
+import { setTask } from "../../features/task/taskSlice";
+import { priorityTextColor, titleExtension } from "../../../utils/functions";
 import { nanoid } from "nanoid";
-import { dateFormatFancy } from "../../../utils/functions";
-import { MdOutlineModeEdit } from "react-icons/md";
+import { setAllRemarks, setTaskRemarks } from "../../features/task/remarkSlice";
 
 const ViewTask = () => {
   const params = useParams();
@@ -36,15 +31,15 @@ const ViewTask = () => {
   const queryParams = new URLSearchParams(search);
 
   const { returnPath } = useSelector((store) => store.auth);
-  const { task, taskRemarks } = useSelector((store) => store.tasks);
+  const { task } = useSelector((store) => store.tasks);
   const { changeCount } = useSelector((store) => store.common);
-  const { loggedInUser } = useSelector((store) => store.auth);
 
   const [searchInput, setSearchInput] = useState("");
   const [taskUuid, setTaskUuid] = useState("");
   const [meta, setMeta] = useState("");
 
   const returnUrl = <Link to={`${returnPath}/tasks`}>Back to Task List</Link>;
+  const resetPath = `/task/view/${params.id}`;
 
   const fetchData = async () => {
     setTaskUuid(params.id);
@@ -52,7 +47,18 @@ const ViewTask = () => {
       const master = await customFetch.get(`/tasks/all-data/${params.id}`);
       dispatch(setTask(master.data.data.rows[0]));
 
-      const remarks = await customFetch.get(`/remarks/remarks/${params.id}`);
+      const remarks = await customFetch.get(`/remarks/remarks/${params.id}`, {
+        params: {
+          page: queryParams.get("page") || "",
+          name: queryParams.get("s") || "",
+        },
+      });
+
+      const allRemarks = await customFetch.get(
+        `/remarks/all-remarks/${params.id}`
+      );
+
+      dispatch(setAllRemarks(allRemarks.data.data.rows));
       dispatch(setTaskRemarks(remarks.data.data.rows));
       setMeta(remarks.data.meta);
     } catch (error) {
@@ -69,11 +75,15 @@ const ViewTask = () => {
   const pageCount = meta.totalPages;
   const currentPage = meta.currentPage;
 
-  const resetSearch = () => {};
+  const resetSearch = () => {
+    setSearchInput("");
+    navigate(`${resetPath}`);
+  };
 
   useEffect(() => {
     fetchData();
-  }, [params.id, changeCount]);
+    setSearchInput(queryParams.get("s"));
+  }, [params.id, changeCount, queryParams.get("page"), queryParams.get("s")]);
 
   return (
     <>
@@ -150,7 +160,7 @@ const ViewTask = () => {
                         <input
                           type="text"
                           name="s"
-                          value={searchInput}
+                          value={searchInput || ""}
                           className="form-control"
                           placeholder="Search by name..."
                           onChange={(e) => setSearchInput(e.target.value)}
@@ -176,59 +186,7 @@ const ViewTask = () => {
                 </Form>
               </div>
             </div>
-            {console.log(taskRemarks)}
-
-            <div className="card-body">
-              <div className="divide-y">
-                {taskRemarks?.map((i) => {
-                  const initialLetters = initials(i.details[0].assign_name);
-
-                  return (
-                    <div key={nanoid()} className="list-group-item">
-                      <div className="row">
-                        <div className="col-auto">
-                          <span className="avatar">{initialLetters}</span>
-                        </div>
-                        <div className="col">
-                          <div className="">
-                            {i.remark.length > 150
-                              ? i.remark.substr(0, 150) + `Show More ...`
-                              : i.remark}
-                          </div>
-                          <div className="row mt-3">
-                            <div className="col">
-                              <div className="text-secondary fs-6">
-                                TIME TAKEN:{" "}
-                                {timeDifference(i.start_time, i.end_time)}
-                              </div>
-                            </div>
-                            <div className="col-auto ms-auto">
-                              <div className="text-secondary fs-6">
-                                <span className="me-1">
-                                  {i.details[0].assign_name.toUpperCase()}
-                                </span>
-                                |
-                                <span className="ms-1">
-                                  {dateFormatFancy(i.created_at)?.toUpperCase()}
-                                </span>
-                                {i.remark_by === loggedInUser.id && (
-                                  <button
-                                    type="button"
-                                    className="btn btn-success btn-sm ms-2 me-2"
-                                  >
-                                    <MdOutlineModeEdit />
-                                  </button>
-                                )}
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
+            <TaskRemarks />
             <PaginationContainer
               pageCount={pageCount}
               currentPage={currentPage}
