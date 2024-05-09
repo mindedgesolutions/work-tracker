@@ -21,80 +21,92 @@ const TaskRemarks = () => {
   return (
     <div className="card-body">
       <div className="divide-y">
-        {taskRemarks?.map((i) => {
-          const initialLetters = initials(i.details[0].assign_name);
-          const today = currentDate();
-          const created = compareFormatDate(i.created_at);
+        {taskRemarks.length === 0 ? (
+          <div key={nanoid()} className="list-group-item">
+            <div className="row">
+              <div className="col">
+                <div className="text-center">NO DATA FOUND</div>
+              </div>
+            </div>
+          </div>
+        ) : (
+          taskRemarks?.map((i) => {
+            const initialLetters = initials(i.details[0].assign_name);
+            const today = currentDate();
+            const created = compareFormatDate(i.created_at);
 
-          return (
-            <div key={nanoid()} className="list-group-item">
-              <div className="row">
-                <div className="col-auto">
-                  <span className="avatar">{initialLetters}</span>
-                </div>
-                <div className="col">
-                  <div className="">
-                    {i.remark.length > 150 ? (
-                      <>
-                        <span className="me-1">
-                          {toggleDesc
-                            ? i.remark
-                            : i.remark.substr(0, 150) + `...`}
-                        </span>
-                        <span
-                          className="badge bg-purple-lt cursor-pointer"
-                          onClick={() => setToggleDesc(!toggleDesc)}
-                        >
-                          {toggleDesc ? `show less` : `show more`}
-                        </span>
-                      </>
-                    ) : (
-                      i.remark
-                    )}
+            return (
+              <div key={nanoid()} className="list-group-item">
+                <div className="row">
+                  <div className="col-auto">
+                    <span className="avatar">{initialLetters}</span>
                   </div>
-                  <div className="row mt-3">
-                    <div className="col">
-                      <div className="text-secondary fs-6">
-                        TIME TAKEN: {timeDifference(i.start_time, i.end_time)}
-                      </div>
+                  <div className="col">
+                    <div className="">
+                      {i.remark.length > 150 ? (
+                        <>
+                          <span className="me-1">
+                            {toggleDesc
+                              ? i.remark
+                              : i.remark.substr(0, 150) + `...`}
+                          </span>
+                          <span
+                            className="badge bg-purple-lt cursor-pointer"
+                            onClick={() => setToggleDesc(!toggleDesc)}
+                          >
+                            {toggleDesc ? `show less` : `show more`}
+                          </span>
+                        </>
+                      ) : (
+                        i.remark
+                      )}
                     </div>
-                    <div className="col-auto ms-auto">
-                      <div className="text-secondary fs-6">
-                        <span className="me-1">
-                          {i.details[0].assign_name.toUpperCase()}
-                        </span>
-                        |
-                        <span className="ms-1">
-                          {dateFormatFancy(i.created_at)?.toUpperCase()}
-                        </span>
-                        {i.remark_by === loggedInUser.id &&
-                          today === created && (
-                            <>
-                              <button
-                                type="button"
-                                className="btn btn-success btn-sm ms-2 me-1"
-                                onClick={() => dispatch(setRemarkId(i.id))}
-                              >
-                                <MdOutlineModeEdit />
-                              </button>
+                    <div className="row mt-3">
+                      <div className="col">
+                        <div className="text-secondary fs-6">
+                          TIME TAKEN: {timeDifference(i.start_time, i.end_time)}
+                        </div>
+                      </div>
+                      <div className="col-auto ms-auto">
+                        <div className="text-secondary fs-6">
+                          <span className="me-1">
+                            {i.details[0].assign_name.toUpperCase()}
+                          </span>
+                          |
+                          <span className="ms-1">
+                            {dateFormatFancy(i.created_at)?.toUpperCase()}
+                          </span>
+                          {i.remark_by === loggedInUser.id &&
+                            today === created && (
+                              <>
+                                <button
+                                  type="button"
+                                  className="btn btn-success btn-sm ms-2 me-1"
+                                  onClick={() => dispatch(setRemarkId(i.id))}
+                                >
+                                  <MdOutlineModeEdit />
+                                </button>
 
-                              <button
-                                type="button"
-                                className="btn btn-danger btn-sm ms-1 me-1"
-                                onClick={() => dispatch(setShowDelModal(i.id))}
-                              >
-                                <FaRegTrashCan />
-                              </button>
-                            </>
-                          )}
+                                <button
+                                  type="button"
+                                  className="btn btn-danger btn-sm ms-1 me-1"
+                                  onClick={() =>
+                                    dispatch(setShowDelModal(i.id))
+                                  }
+                                >
+                                  <FaRegTrashCan />
+                                </button>
+                              </>
+                            )}
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
-          );
-        })}
+            );
+          })
+        )}
       </div>
     </div>
   );

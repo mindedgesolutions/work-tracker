@@ -2,10 +2,13 @@ import { StatusCodes } from "http-status-codes";
 import pool from "../../db.js";
 import { paginationLogic } from "../../utils/pagination.js";
 
+// ------
 export const addTeam = async (req, res) => {};
 
-export const updateTeam = async (req, res) => {};
+// ------
+export const getAvailableMembers = async (req, res) => {};
 
+// ------
 export const getTeamWithPagination = async (req, res) => {
   const { page } = req.query;
   const pagination = paginationLogic(page, null);
@@ -15,13 +18,13 @@ export const getTeamWithPagination = async (req, res) => {
     roles.name as role,
     json_agg(
       json_build_object(
-        'id', teams.member_id,
+        'id', teams.user_id,
         'name', usr.name
       )
     ) as members
     from users usr 
     left join roles on usr.role_id = roles.id
-    left join teams on teams.manager_id = usr.id
+    left join teams on teams.reporting_to = usr.id
     where usr.role_id in (1, 2, 3, 4) and usr.is_active=true 
     group by usr.id, roles.name
     order by usr.name offset $1 limit $2`,

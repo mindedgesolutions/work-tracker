@@ -13,6 +13,7 @@ import {
   validateProject,
   validateProjectContact,
   validateRole,
+  validateTeam,
 } from "../middleware/masterMiddleware.js";
 import {
   addNewProject,
@@ -39,7 +40,11 @@ import {
   updateMenu,
 } from "../controller/masters/menuController.js";
 import { getAllPriority } from "../controller/masters/priorityController.js";
-import { getTeamWithPagination } from "../controller/masters/teamController.js";
+import {
+  addTeam,
+  getAvailableMembers,
+  getTeamWithPagination,
+} from "../controller/masters/teamController.js";
 
 router.get(`/all-roles`, getAllRoles);
 router
@@ -82,6 +87,7 @@ router.patch(`/menus/:id`, updateMenu);
 
 router.get(`/priorities`, getAllPriority);
 
-router.get(`/teams`, getTeamWithPagination);
+router.route(`/teams`).get(getTeamWithPagination).post(validateTeam, addTeam);
+router.get(`/available-users`, getAvailableMembers);
 
 export default router;

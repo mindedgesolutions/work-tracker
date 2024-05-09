@@ -86,3 +86,7 @@ export const validateMenu = withValidationErrors([
     .notEmpty()
     .withMessage(`Select parent`),
 ]);
+
+export const validateTeam = withValidationErrors([
+  body("members").notEmpty().withMessage(`Select at least one team member`),
+]);

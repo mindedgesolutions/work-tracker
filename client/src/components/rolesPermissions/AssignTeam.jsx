@@ -1,16 +1,26 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Modal } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { nanoid } from "nanoid";
 import AsyncSelect from "react-select/async";
 import SubmitBtn from "../SubmitBtn";
 import { unsetLeadId, unsetShowModal } from "../../features/masters/teamSlice";
+import { splitErrors } from "../../../utils/showErrors";
+import customFetch from "../../../utils/customFetch";
 
 const AssignTeam = () => {
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
 
   const { showModal, listTeam, leadId } = useSelector((store) => store.teams);
+
+  const fetchAvailable = async () => {
+    try {
+    } catch (error) {
+      splitErrors(error?.response?.data?.msg);
+      return error;
+    }
+  };
 
   const handleClose = () => {
     dispatch(unsetShowModal());
@@ -24,6 +34,10 @@ const AssignTeam = () => {
   const leadName = listTeam?.find((i) => i.id === leadId);
 
   const roles = [];
+
+  useEffect(() => {
+    fetchAvailable;
+  }, []);
 
   return (
     <Modal show={showModal} size="lg" onHide={handleClose}>
@@ -47,12 +61,12 @@ const AssignTeam = () => {
           </div>
           <div className="row mt-2">
             <div className="col-md-12 col-sm-12">
-              <label htmlFor="permissions" className="form-label required">
-                Permissions :{" "}
+              <label htmlFor="members" className="form-label required">
+                Members :{" "}
               </label>
               <AsyncSelect
-                id="permissions"
-                name="permissions"
+                id="members"
+                name="members"
                 // options={options}
                 // onChange={handleChange}
                 // value={selectedPermissions[0]?.value ? selectedPermissions : ""}

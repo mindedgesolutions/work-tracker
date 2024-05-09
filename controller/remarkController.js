@@ -31,8 +31,8 @@ export const taskRemarks = async (req, res) => {
   const records = await pool.query(
     `select tr.* from task_remarks tr
     left join users um on tr.remark_by = um.id
-    where tr.id is not null ${search} group by tr.id`,
-    []
+    where tr.id is not null ${search} and tr.task_id=$1 group by tr.id`,
+    [tid]
   );
   const totalPages = Math.ceil(records.rowCount / pagination.pageLimit);
   const meta = {

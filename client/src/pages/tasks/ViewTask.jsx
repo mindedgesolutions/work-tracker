@@ -58,7 +58,6 @@ const ViewTask = () => {
       const allRemarks = await customFetch.get(
         `/remarks/all-remarks/${params.id}`
       );
-
       dispatch(setAllRemarks(allRemarks.data.data.rows));
       dispatch(setTaskRemarks(remarks.data.data.rows));
       setMeta(remarks.data.meta);
@@ -110,10 +109,10 @@ const ViewTask = () => {
               <div className="col-md-12 col-sm-12">
                 <label className="fw-bold">{task?.prname?.toUpperCase()}</label>
               </div>
-              <div className="col-md-12 col-sm-12 fw-bold mt-4">
+              <div className="col-md-12 col-sm-12 fw-bold mt-2">
                 <p className="fw-bold">{task?.short_desc}</p>
               </div>
-              <div className="col-md-12 col-sm-12 mt-2">
+              <div className="col-md-12 col-sm-12">
                 <p>{task?.long_desc || `NA`}</p>
               </div>
               <hr />
