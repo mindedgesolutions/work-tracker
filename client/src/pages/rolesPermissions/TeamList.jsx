@@ -30,22 +30,23 @@ const TeamList = () => {
   const { search } = useLocation();
   const queryParams = new URLSearchParams(search);
 
-  const [searchInput, setSearchInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [metaData, setMetaData] = useState("");
 
   const { listTeam } = useSelector((store) => store.teams);
-
-  const resetSearch = () => {};
+  const { changeCount } = useSelector((store) => store.common);
 
   const fetchData = async () => {
+    setIsLoading(true);
     try {
       const response = await customFetch.get(`/masters/teams`, {
         params: { page: queryParams.get("page") || "" },
       });
       dispatch(setListTeam(response.data.data.rows));
       setMetaData(response.data.meta);
+      setIsLoading(false);
     } catch (error) {
+      setIsLoading(false);
       splitErrors(error?.response?.data?.msg);
       return error;
     }
@@ -62,7 +63,7 @@ const TeamList = () => {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [changeCount]);
 
   return (
     <>
@@ -114,7 +115,18 @@ const TeamList = () => {
                             </td>
                             <td>{r?.name?.toUpperCase()}</td>
                             <td>{r?.role?.toUpperCase()}</td>
-                            <td></td>
+                            <td>
+                              {r?.members?.map((i) => {
+                                return (
+                                  <span
+                                    key={nanoid()}
+                                    className="badge bg-success-lt cursor-pointer me-1"
+                                  >
+                                    {i.name}
+                                  </span>
+                                );
+                              })}
+                            </td>
                             <td className="text-nowrap">
                               <button
                                 type="button"

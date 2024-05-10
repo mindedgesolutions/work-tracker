@@ -88,5 +88,10 @@ export const validateMenu = withValidationErrors([
 ]);
 
 export const validateTeam = withValidationErrors([
-  body("members").notEmpty().withMessage(`Select at least one team member`),
+  body("members").custom((value, { req }) => {
+    if (value.length === 0) {
+      throw new BadRequestError(`Select at least one team member`);
+    }
+    return true;
+  }),
 ]);

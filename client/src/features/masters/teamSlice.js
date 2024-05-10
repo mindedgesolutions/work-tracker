@@ -4,6 +4,7 @@ const initialState = {
   listTeam: [],
   showModal: false,
   leadId: "",
+  availableMembers: [],
 };
 
 const teamSlice = createSlice({
@@ -28,6 +29,12 @@ const teamSlice = createSlice({
     unsetLeadId: (state) => {
       state.leadId = "";
     },
+    setAvailableMembers: (state, action) => {
+      state.availableMembers = action.payload;
+    },
+    unsetAvailableMembers: (state) => {
+      state.availableMembers = [];
+    },
   },
 });
 
@@ -38,5 +45,7 @@ export const {
   unsetShowModal,
   setLeadId,
   unsetLeadId,
+  setAvailableMembers,
+  unsetAvailableMembers,
 } = teamSlice.actions;
 export default teamSlice.reducer;

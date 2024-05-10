@@ -43,7 +43,7 @@ import { getAllPriority } from "../controller/masters/priorityController.js";
 import {
   addTeam,
   getAvailableMembers,
-  getTeamWithPagination,
+  getLeadWithPagination,
 } from "../controller/masters/teamController.js";
 
 router.get(`/all-roles`, getAllRoles);
@@ -87,7 +87,7 @@ router.patch(`/menus/:id`, updateMenu);
 
 router.get(`/priorities`, getAllPriority);
 
-router.route(`/teams`).get(getTeamWithPagination).post(validateTeam, addTeam);
+router.route(`/teams`).get(getLeadWithPagination).post(validateTeam, addTeam);
 router.get(`/available-users`, getAvailableMembers);
 
 export default router;
