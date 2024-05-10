@@ -17,6 +17,7 @@ import userRouter from "./routes/userRoute.js";
 import authRouter from "./routes/authRoute.js";
 import taskRouter from "./routes/taskRoute.js";
 import remarkRouter from "./routes/remarkRoute.js";
+import chartDataRouter from "./routes/chartDataRoutes.js";
 
 if (process.env.NODE_ENV === "development") {
   app.use(morgan("dev"));
@@ -32,6 +33,7 @@ app.use("/api/v1/user", protectRoute, userRouter);
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/tasks", protectRoute, taskRouter);
 app.use("/api/v1/remarks", protectRoute, remarkRouter);
+app.use("/api/v1/charts", protectRoute, chartDataRouter);
 
 // API ends ---
 

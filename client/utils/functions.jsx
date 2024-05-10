@@ -180,3 +180,14 @@ export const timeDifference = (startTime, endTime) => {
   }
   return label;
 };
+
+// ------
+export const lastSixMonths = () => {
+  const currentDate = dayjs();
+  let result = [];
+  for (let i = 5; i >= 0; i--) {
+    const date = currentDate.subtract(i, "month");
+    result.push(date.format("MMM"));
+  }
+  return result;
+};

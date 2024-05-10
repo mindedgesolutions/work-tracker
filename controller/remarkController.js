@@ -79,6 +79,17 @@ export const addRemark = async (req, res) => {
       userUuid,
     ]);
 
+    await pool.query(`select count(id) from task_remarks where task_id=$1`, [
+      tid.rows[0].id,
+    ]);
+
+    const status = 2;
+
+    await pool.query(
+      `update task_master set task_status=$1 where id=$2 and task_status!=3`,
+      [status, tid.rows[0].id]
+    );
+
     const data = await pool.query(
       `insert into task_remarks(task_id, remark_by, remark, created_at, updated_at, start_time, end_time)
       values($1, $2, $3, $4, $5, $6, $7)`,

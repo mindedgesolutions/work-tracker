@@ -6,9 +6,7 @@ import {
   PaginationContainer,
   TableLoader,
 } from "../../components";
-import { Form, useLocation } from "react-router-dom";
-import { IoIosSearch } from "react-icons/io";
-import { IoFolderOpen, IoReloadSharp } from "react-icons/io5";
+import { useLocation } from "react-router-dom";
 import { nanoid } from "nanoid";
 import { serialNo } from "../../../utils/functions";
 import { MdOutlineModeEdit } from "react-icons/md";
