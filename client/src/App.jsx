@@ -7,6 +7,7 @@ import { loader as AdminLayoutLoader } from "./pages/layouts/AdminLayout";
 import { loader as LeadLayoutLoader } from "./pages/layouts/LeadLayout";
 import { loader as UserLayoutLoader } from "./pages/layouts/UserLayout";
 import { loader as CommonLayoutLoader } from "./pages/layouts/CommonLayout";
+import { loader as AdminChartLoader } from "./pages/dashboards/AdminDashboard";
 
 // Action starts ------
 import { action as LoginAction } from "./pages/auth/Login";
@@ -21,7 +22,11 @@ const router = createBrowserRouter([
     element: <Wt.AdminLayout />,
     loader: AdminLayoutLoader(store),
     children: [
-      { path: "dashboard", element: <Wt.AdminDashboard /> },
+      {
+        path: "dashboard",
+        element: <Wt.AdminDashboard />,
+        loader: AdminChartLoader,
+      },
       { path: "users", element: <Wt.UserList /> },
       { path: "roles", element: <Wt.RoleList /> },
       { path: "projects", element: <Wt.ProjectList /> },

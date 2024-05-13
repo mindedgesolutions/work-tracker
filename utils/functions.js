@@ -49,6 +49,28 @@ export const formatStartDate = (date) => {
 };
 
 // ------
+export const chartFormatDateAny = (noMonth) => {
+  const currentDate = dayjs();
+
+  let allStarts = [],
+    allEnds = [];
+
+  for (let i = Number(noMonth); i >= 0; i--) {
+    const firstDateOfMonth = currentDate.subtract(i, "month").startOf("month");
+    const lastDateOfMonth = currentDate.subtract(i, "month").endOf("month");
+
+    allStarts.push(
+      firstDateOfMonth.format(`YYYY-MM-DD ${process.env.REPORT_START_TIME}`)
+    );
+    allEnds.push(
+      lastDateOfMonth.format(`YYYY-MM-DD ${process.env.REPORT_END_TIME}`)
+    );
+  }
+
+  return [allStarts, allEnds];
+};
+
+// ------
 export const getUserId = async (uuid) => {
   const data = await pool.query(`select id from users where uuid=$1`, [uuid]);
   return data.rows[0].id;

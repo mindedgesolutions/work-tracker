@@ -22,4 +22,5 @@ export { default as TaskDeleteModal } from "./tasks/TaskDeleteModal";
 export { default as AddEditComment } from "./tasks/AddEditComment";
 export { default as TaskRemarks } from "./tasks/TaskRemarks";
 export { default as RemarkDeleteModal } from "./tasks/RemarkDeleteModal";
-export { default as AdminTaskGraph } from "./dashboards/admin/AdminTaskGraph";
+export { default as AdminTaskBar } from "./dashboards/admin/AdminTaskBar";
+export { default as AdminRemarkPie } from "./dashboards/admin/AdminRemarkPie";

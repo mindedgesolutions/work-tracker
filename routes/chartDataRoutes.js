@@ -1,7 +1,11 @@
 import { Router } from "express";
 const router = Router();
-import { adminTaskChartBar } from "../controller/chartData/adminChart.js";
+import {
+  adminRemarkChartPie,
+  adminTaskChartBar,
+} from "../controller/chartData/adminChart.js";
 
 router.get(`/admin/task-bar`, adminTaskChartBar);
+router.get(`/admin/remark-pie/:project`, adminRemarkChartPie);
 
 export default router;
