@@ -9,14 +9,20 @@ import {
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import { Footer, SideBar, TopNav } from "../../components";
+import { setTeamMembers } from "../../features/masters/teamSlice";
 
 // Loader starts ------
 export const loader = (store) => async () => {
   const { loggedInUser } = store.getState().auth;
+  const { teamMembers } = store.getState().teams;
   try {
     if (!loggedInUser.id) {
       const user = await customFetch.get(`/auth/user`);
       store.dispatch(setLoggedInUser(user.data.data.rows[0]));
+    }
+    if (teamMembers.length === 0) {
+      const members = await customFetch.get(`/masters/team-members`);
+      store.dispatch(setTeamMembers(members.data.data.rows));
     }
     return null;
   } catch (error) {

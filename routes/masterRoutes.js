@@ -44,6 +44,7 @@ import {
   addTeam,
   getAvailableMembers,
   getLeadWithPagination,
+  leadTeamMembers,
 } from "../controller/masters/teamController.js";
 
 router.get(`/all-roles`, getAllRoles);
@@ -89,5 +90,6 @@ router.get(`/priorities`, getAllPriority);
 
 router.route(`/teams`).get(getLeadWithPagination).post(validateTeam, addTeam);
 router.get(`/available-users`, getAvailableMembers);
+router.get(`/team-members`, leadTeamMembers);
 
 export default router;

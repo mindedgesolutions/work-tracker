@@ -24,3 +24,5 @@ export { default as TaskRemarks } from "./tasks/TaskRemarks";
 export { default as RemarkDeleteModal } from "./tasks/RemarkDeleteModal";
 export { default as AdminTaskBar } from "./dashboards/admin/AdminTaskBar";
 export { default as AdminRemarkPie } from "./dashboards/admin/AdminRemarkPie";
+export { default as TeamMembers } from "./dashboards/lead/TeamMembers";
+export { default as LeadTaskTable } from "./dashboards/lead/LeadTaskTable";

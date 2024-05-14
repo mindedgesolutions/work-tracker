@@ -81,3 +81,25 @@ export const getLeadWithPagination = async (req, res) => {
 
   res.status(StatusCodes.OK).json({ data, meta });
 };
+
+// ------
+export const leadTeamMembers = async (req, res) => {
+  const { uuid } = req.user;
+
+  const user = await pool.query(`select id from users where uuid=$1`, [uuid]);
+  const userId = user.rows[0].id;
+
+  const data = await pool.query(
+    `select
+    u.id,
+    u.name,
+    count(td.id) as task_count
+    from users u
+    left join task_details td on td.assigned_to = u.id
+    left join teams t on t.user_id = u.id
+    where t.reporting_to=$1 group by u.id order by u.name`,
+    [userId]
+  );
+
+  res.status(StatusCodes.OK).json({ data });
+};

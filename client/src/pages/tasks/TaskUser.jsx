@@ -11,8 +11,6 @@ import { nanoid } from "nanoid";
 import { priorityBadge, serialNo } from "../../../utils/functions";
 import { useDispatch, useSelector } from "react-redux";
 import { IoFolderOpen } from "react-icons/io5";
-import { MdOutlineModeEdit, MdOutlinePowerSettingsNew } from "react-icons/md";
-import { FaRegTrashCan } from "react-icons/fa6";
 import { splitErrors } from "../../../utils/showErrors";
 import customFetch from "../../../utils/customFetch";
 import { setListTask } from "../../features/task/taskSlice";

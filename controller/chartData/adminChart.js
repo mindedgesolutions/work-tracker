@@ -39,7 +39,19 @@ export const adminTaskChartBar = async (req, res) => {
 // ------
 
 export const adminRemarkChartPie = async (req, res) => {
-  const { project } = req.params;
+  const { task } = req.params;
+  console.log(task);
 
-  res.status(StatusCodes.OK).json({ data: `Coming from NodeJS: ${project}` });
+  const data = await pool.query(
+    `select
+    r.remark_by,
+    u.name,
+    count(r.id) as remark_count
+    from task_remarks r
+    inner join users u on u.id = r.remark_by
+    where r.task_id=$1 group by r.remark_by, u.name`,
+    [task]
+  );
+
+  res.status(StatusCodes.OK).json({ data });
 };

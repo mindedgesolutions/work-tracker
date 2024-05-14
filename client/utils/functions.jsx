@@ -50,7 +50,20 @@ export const compareFormatDate = (value) => {
 
 // ------
 export const randomBadgeBg = () => {
-  const colorArray = ["azure", "purple", "pink", "yellow", "green", "cyan"];
+  const colorArray = [
+    "blue",
+    "azure",
+    "indigo",
+    "purple",
+    "pink",
+    "red",
+    "orange",
+    "yellow",
+    "lime",
+    "green",
+    "teal",
+    "cyan",
+  ];
   const randomIndex = Math.floor(Math.random() * colorArray.length);
   return colorArray[randomIndex];
 };

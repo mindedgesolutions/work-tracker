@@ -8,6 +8,7 @@ import userReducer from "./features/users/userSlice";
 import authReducer from "./features/auth/authSlice";
 import taskReducer from "./features/task/taskSlice";
 import remarkReducer from "./features/task/remarkSlice";
+import adminDashboardReducer from "./features/dashboard/admin/adminDashboardSlice";
 
 export const store = configureStore({
   reducer: {
@@ -20,5 +21,6 @@ export const store = configureStore({
     auth: authReducer,
     tasks: taskReducer,
     remarks: remarkReducer,
+    adminDashboard: adminDashboardReducer,
   },
 });

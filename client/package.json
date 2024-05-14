@@ -13,7 +13,6 @@
     "@reduxjs/toolkit": "^2.2.3",
     "@tanstack/react-query": "^5.29.2",
     "@wojtekmaj/react-timerange-picker": "^6.0.0",
-    "apexcharts": "^3.49.0",
     "axios": "^1.6.8",
     "date-and-time": "^3.1.1",
     "dayjs": "^1.11.10",
@@ -28,6 +27,7 @@
     "react-router-dom": "^6.22.3",
     "react-select": "^5.8.0",
     "react-toastify": "^10.0.5",
+    "recharts": "^2.12.7",
     "uuid": "^9.0.1"
   },
   "devDependencies": {
