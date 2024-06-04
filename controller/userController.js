@@ -2,7 +2,7 @@ import { StatusCodes } from "http-status-codes";
 import pool from "../db.js";
 import { v4 as uuidv4 } from "uuid";
 import { hashPassword } from "../utils/passwordUtils.js";
-import { currentDate } from "../utils/functions.js";
+import { currentDate, getUserId } from "../utils/functions.js";
 import { paginationLogic } from "../utils/pagination.js";
 
 // ------
@@ -138,4 +138,19 @@ export const getAllUserId = async (req, res) => {
   const data = await pool.query(`select id, name from users order by name`, []);
 
   res.status(StatusCodes.OK).json({ data });
+};
+
+// ------
+
+export const updateCurrentUser = async (req, res) => {
+  const { name, email, mobile } = req.body;
+  const { uuid } = req.user;
+  const id = await getUserId(uuid);
+
+  const data = await pool.query(
+    `update users set name=$1, email=$2, mobile=$3 where id=$4`,
+    [name, email, mobile, id]
+  );
+
+  res.status(StatusCodes.ACCEPTED).json({ data: `success` });
 };

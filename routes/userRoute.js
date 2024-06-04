@@ -7,6 +7,7 @@ import {
   editUserDetails,
   getAllUserId,
   getUserWithPagination,
+  updateCurrentUser,
 } from "../controller/userController.js";
 import { activateUser } from "../controller/masters/permissionController.js";
 
@@ -20,5 +21,6 @@ router
   .delete(deleteUser);
 router.patch(`/users/activate/:id`, activateUser);
 router.get(`/user-id`, getAllUserId);
+router.post(`/update-profile`, updateCurrentUser);
 
 export default router;

@@ -101,13 +101,10 @@ const TopNav = ({ logout }) => {
               </div>
             </a>
             <div className="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-              <Link to="/admin/profile" className="dropdown-item">
+              <Link to="/profile" className="dropdown-item">
                 Profile
               </Link>
-              <Link to="/admin/notifications" className="dropdown-item">
-                Notifications
-              </Link>
-              <Link to="/admin/change-password" className="dropdown-item">
+              <Link to="/change-password" className="dropdown-item">
                 Change Password
               </Link>
               <button type="button" className="dropdown-item" onClick={logout}>
